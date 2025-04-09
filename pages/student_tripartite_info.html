@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'templates/head.html' %}
+<body>
+<div class="fater-layout-header">
+    {% include 'templates/nav.html' %}
+</div>
+
+<div class="fater-layout-menus">
+    {% include 'templates/menus.html' %}
+</div>
+
+<div class="fater-layout-body">
+    <div class="fater-panel">
+        <div class="fater-pannel-title">
+            三方信息管理
+        </div>
+        <div class="fater-pannel-body">
+            <div class="fater-form-inline">
+                <button event="add" type="button" class="fater-btn fater-btn-primary">
+                    <span style="color: #FFFFFF;" class="fa fa-plus"></span> 添加三方信息
+                </button>
+            </div>
+            <div id="tableShow"></div>
+        </div>
+    </div>
+</div>
+
+<div class="addWin fater-model-win fater-model-hidden">
+    <div class="fater-model-win-head">
+        <span>添加三方信息</span>
+        <span>×</span>
+    </div>
+    <div class="fater-model-win-body">
+        <form name="addForm" class="fater-form">
+            <div class="fater-form-item">
+                <label>公司所在地</label>
+                <input type="text" name="company_location" placeholder="请输入公司所在地"/>
+            </div>
+            <div class="fater-form-item">
+                <label>公司规模</label>
+                <input type="text" name="company_scale" placeholder="请输入公司规模"/>
+            </div>
+            <div class="fater-form-item">
+                <label>薪资</label>
+                <input type="text" name="salary" placeholder="请输入薪资"/>
+            </div>
+            <div class="fater-form-item">
+                <label>岗位名称</label>
+                <input type="text" name="job_name" placeholder="请输入岗位名称"/>
+            </div>
+            <div class="fater-form-item">
+                <label>岗位类别</label>
+                <input type="text" name="job_category" placeholder="请输入岗位类别"/>
+            </div>
+            <div class="fater-form-item">
+                <label>公司类别</label>
+                <input type="text" name="company_category" placeholder="请输入公司类别"/>
+            </div>
+            <div class="fater-form-item">
+                <label>学生所在学校</label>
+                <input type="text" name="school" placeholder="请输入学生所在学校"/>
+            </div>
+            <div class="fater-form-item">
+                <label>学院</label>
+                <select name="college_id">
+                    <option value="">选择所属学院</option>
+                    {% for item in colleges %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="fater-form-item">
+                <label>专业</label>
+                <select name="major_id">
+                    <option value="">选择所学专业</option>
+                    {% for item in majors %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="fater-form-item">
+                <label>学生姓名</label>
+                <input type="text" name="student_name" placeholder="请输入学生姓名"/>
+            </div>
+            <div class="fater-form-item">
+                <label>学生身份证号</label>
+                <input type="text" name="student_id_card" placeholder="请输入学生身份证号"/>
+            </div>
+            <div class="fater-form-btns">
+                <button type="button" id="addFormBtn" class="fater-btn fater-btn-primary">
+                    提交
+                </button>
+                <button type="reset" class="fater-btn fater-btn-normal">
+                    取消
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="updWin fater-model-win fater-model-hidden">
+    <div class="fater-model-win-head">
+        <span>修改三方信息</span>
+        <span>×</span>
+    </div>
+    <div class="fater-model-win-body">
+        <form name="updForm" class="fater-form">
+            <div class="fater-form-item">
+                <label>公司所在地</label>
+                <input type="text" name="company_location" placeholder="请输入公司所在地"/>
+            </div>
+            <div class="fater-form-item">
+                <label>公司规模</label>
+                <input type="text" name="company_scale" placeholder="请输入公司规模"/>
+            </div>
+            <div class="fater-form-item">
+                <label>薪资</label>
+                <input type="text" name="salary" placeholder="请输入薪资"/>
+            </div>
+            <div class="fater-form-item">
+                <label>岗位名称</label>
+                <input type="text" name="job_name" placeholder="请输入岗位名称"/>
+            </div>
+            <div class="fater-form-item">
+                <label>岗位类别</label>
+                <input type="text" name="job_category" placeholder="请输入岗位类别"/>
+            </div>
+            <div class="fater-form-item">
+                <label>公司类别</label>
+                <input type="text" name="company_category" placeholder="请输入公司类别"/>
+            </div>
+            <div class="fater-form-item">
+                <label>学生所在学校</label>
+                <input type="text" name="school" placeholder="请输入学生所在学校"/>
+            </div>
+            <div class="f

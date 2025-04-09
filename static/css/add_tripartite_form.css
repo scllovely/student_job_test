@@ -1,0 +1,95 @@
+/* add_tripartite_form.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.fater-layout-header {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+}
+
+.fater-layout-menus {
+    background-color: #f4f4f4;
+    padding: 10px;
+}
+
+.fater-layout-body {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.fater-panel {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.fater-pannel-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.fater-form-item {
+    margin-bottom: 15px;
+}
+
+.fater-form-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.fater-form-item input,
+.fater-form-item select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box; /* 确保输入框宽度包含内边距和边框 */
+}
+
+.fater-form-btns {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.fater-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.fater-btn-primary {
+    background-color: #007BFF;
+    color: white;
+}
+
+.fater-btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.fater-btn-normal {
+    background-color: #6c757d;
+    color: white;
+}
+
+.fater-btn-normal:hover {
+    background-color: #5a6268;
+}
+
+.fater-layout-foot {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}

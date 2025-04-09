@@ -6,7 +6,7 @@ from django.db import IntegrityError
 import requests
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -1297,3 +1297,40 @@ class SendLogs(BaseView):
         models.SendLogs.objects.filter(id=request.POST.get('id')).delete()
 
         return BaseView.success()
+
+'''
+三方信息管理
+'''
+class TripartiteInfoView(BaseView):
+    def get(self, request, module, *args, **kwargs):
+        if module == 'show':
+            user = request.session.get('user')
+            student = models.Students.objects.filter(user__id=user).first()
+            tripartite_info = models.TripartiteInfo.objects.filter(student=student)
+            return render(request, 'tripartite_info.html', {'tripartite_info': tripartite_info})
+        elif module == 'add':
+            return render(request, 'add_tripartite_info.html')
+        else:
+            return self.error()
+
+    def post(self, request, module, *args, **kwargs):
+        if module == 'add':
+            user = request.session.get('user')
+            student = models.Students.objects.filter(user__id=user).first()
+            models.TripartiteInfo.objects.create(
+                company_location=request.POST.get('company_location'),
+                company_scale=request.POST.get('company_scale'),
+                salary=request.POST.get('salary'),
+                position_name=request.POST.get('position_name'),
+                position_category=request.POST.get('position_category'),
+                company_category=request.POST.get('company_category'),
+                school=request.POST.get('school'),
+                college=request.POST.get('college'),
+                major=request.POST.get('major'),
+                student_name=request.POST.get('student_name'),
+                student_id_card=request.POST.get('student_id_card'),
+                student=student
+            )
+            return JsonResponse({'status': 'success', 'message': '三方信息提交成功，等待审核'})
+        else:
+            return self.error()

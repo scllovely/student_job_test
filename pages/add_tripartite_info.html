@@ -1,0 +1,162 @@
+<!-- pages/add_tripartite_info.html -->
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'templates/head.html' %}
+<style>
+    /* 设置输入框和选择框的宽度 */
+   .fater-form-item input[type="text"],
+   .fater-form-item select {
+        width: 300px; /* 可根据需要调整宽度 */
+    }
+
+    /* 设置表单项的布局 */
+   .fater-form-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    /* 设置标签的宽度 */
+   .fater-form-item label {
+        width: 150px; /* 可根据需要调整宽度 */
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    /* 设置按钮的样式 */
+   .fater-form-btns {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    /* 设置按钮的间距 */
+   .fater-form-btns button {
+        margin: 0 10px;
+    }
+</style>
+<body>
+<div class="fater-layout-header">
+    {% include 'templates/nav.html' %}
+</div>
+
+<div class="fater-layout-menus">
+    {% include 'templates/menus.html' %}
+</div>
+
+<div class="fater-layout-body">
+    <div class="fater-panel">
+        <div class="fater-pannel-title">
+            填写三方信息
+        </div>
+        <div class="fater-pannel-body">
+            <form name="addForm" class="fater-form" id="addForm">
+                 <div class="fater-form-item">
+                    <label>学生姓名</label>
+                    <input type="text" name="student_name" placeholder="请输入学生姓名" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>学生身份证号</label>
+                    <input type="text" name="student_id_card" placeholder="请输入学生身份证号" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>公司所在地</label>
+                    <input type="text" name="company_location" placeholder="请输入公司所在地" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>公司规模</label>
+                    <select name="company_scale" required>
+                        <option value="大型企业">大型企业</option>
+                        <option value="中型企业">中型企业</option>
+                        <option value="小型企业">小型企业</option>
+                    </select>
+                </div>
+                <div class="fater-form-item">
+                    <label>薪资</label>
+                    <input type="text" name="salary" placeholder="请输入薪资" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>岗位名称</label>
+                    <input type="text" name="position_name" placeholder="请输入岗位名称" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>岗位类别</label>
+                    <select name="position_category" required>
+                        <option value="技术类岗位">技术类岗位</option>
+                        <option value="运营类岗位">运营类岗位</option>
+                        <option value="销售类岗位">销售类岗位</option>
+                        <option value="设计类岗位">设计类岗位</option>
+                        <option value="教育类岗位">教育类岗位</option>
+                        <option value="管理类岗位">管理类岗位</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="fater-form-item">
+                    <label>公司类别</label>
+                    <select name="company_category" required>
+                        <option value="国企">国企</option>
+                        <option value="央企">央企</option>
+                        <option value="私企">私企</option>
+                        <option value="外企">外企</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="fater-form-item">
+                    <label>学生所在学校</label>
+                    <input type="text" name="school" placeholder="请输入学生所在学校" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>学院</label>
+                    <input type="text" name="college" placeholder="请输入学院" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>专业名称</label>
+                    <input type="text" name="major" placeholder="请输入专业名称" required/>
+                </div>
+               
+                <div class="fater-form-btns">
+                    <button type="button" id="addFormBtn" class="fater-btn fater-btn-primary">
+                        提交
+                    </button>
+                    <button type="reset" class="fater-btn fater-btn-normal">
+                        取消
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="fater-layout-foot">
+    {% include 'templates/foot.html' %}
+</div>
+
+{% include 'templates/commjs.html' %}
+<script>
+    document.getElementById('addFormBtn').addEventListener('click', function() {
+        var form = document.getElementById('addForm');
+        if (form.checkValidity() === false) {
+            form.reportValidity();
+            return;
+        }
+        var formData = new FormData(form);
+        fetch('/jobs/tripartite_info/add/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+       .then(response => response.json())
+       .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                window.location.href = '/jobs/tripartite_info/show/';
+            } else {
+                alert(data.message);
+            }
+        });
+    });
+</script>
+</body>
+</html>
