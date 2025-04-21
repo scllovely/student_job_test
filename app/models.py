@@ -54,6 +54,27 @@ class Students(models.Model):
     class Meta:
         db_table = 'students'
 
+class TripartiteInfo(models.Model):
+    company_location = models.CharField(max_length=200, verbose_name='公司所在地')
+    company_scale = models.CharField(max_length=100, verbose_name='公司规模')
+    salary = models.CharField(max_length=50, verbose_name='薪资')
+    position_name = models.CharField(max_length=100, verbose_name='岗位名称')
+    position_category = models.CharField(max_length=100, verbose_name='岗位类别')
+    company_category = models.CharField(max_length=100, verbose_name='公司类别')
+    school = models.CharField(max_length=200, verbose_name='学生所在学校')
+    college = models.CharField(max_length=200, verbose_name='学院')
+    major = models.CharField(max_length=200, verbose_name='专业名称')
+    student_name = models.CharField(max_length=100, verbose_name='学生姓名')
+    student_id_card = models.CharField(max_length=18, verbose_name='学生身份证号')
+    student = models.ForeignKey(Students, on_delete=models.CASCADE, verbose_name='学生')
+    status = models.CharField(max_length=20, default='待审核', verbose_name='审核状态')
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        db_table = 'tripartite_info'
+        verbose_name = '三方信息'
+        verbose_name_plural = verbose_name
+
 class EducationLogs(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
     name = models.CharField('学校名称', max_length=20, null=False)
@@ -81,23 +102,3 @@ class SendLogs(models.Model):
     class Meta:
         db_table = 'send_logs'  #
 
-class TripartiteInfo(models.Model):
-    company_location = models.CharField(max_length=200, verbose_name='公司所在地')
-    company_scale = models.CharField(max_length=100, verbose_name='公司规模')
-    salary = models.CharField(max_length=50, verbose_name='薪资')
-    position_name = models.CharField(max_length=100, verbose_name='岗位名称')
-    position_category = models.CharField(max_length=100, verbose_name='岗位类别')
-    company_category = models.CharField(max_length=100, verbose_name='公司类别')
-    school = models.CharField(max_length=200, verbose_name='学生所在学校')
-    college = models.CharField(max_length=200, verbose_name='学院')
-    major = models.CharField(max_length=200, verbose_name='专业名称')
-    student_name = models.CharField(max_length=100, verbose_name='学生姓名')
-    student_id_card = models.CharField(max_length=18, verbose_name='学生身份证号')
-    student = models.ForeignKey(Students, on_delete=models.CASCADE, verbose_name='学生')
-    status = models.CharField(max_length=20, default='待审核', verbose_name='审核状态')
-    create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
-
-    class Meta:
-        db_table = 'tripartite_info'
-        verbose_name = '三方信息'
-        verbose_name_plural = verbose_name
