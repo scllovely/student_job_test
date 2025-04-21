@@ -2,7 +2,7 @@ $(document).ready(function() {
     $('#updateBtn').on('click', function() {
         var company_name = $('input[name="company_name"]').val();
         $.ajax({
-            url: "/jobs/tripartiteInfo/student/update/",
+            url: "/jobs/tripartite_info/student/update/",
             type: "POST",
             data: {
                 company_name: company_name
@@ -21,7 +21,7 @@ $(document).ready(function() {
 
     $('#submitBtn').on('click', function() {
         $.ajax({
-            url: "/jobs/tripartiteInfo/student/submit/",
+            url: "/jobs/tripartite_info/student/submit/",
             type: "POST",
             success: function(res) {
                 if (res.code == 0) {

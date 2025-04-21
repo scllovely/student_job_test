@@ -1310,6 +1310,67 @@ class TripartiteInfoView(BaseView):
             return render(request, 'tripartite_info.html', {'tripartite_info': tripartite_info})
         elif module == 'add':
             return render(request, 'add_tripartite_info.html')
+        elif module == 'teacher/show':
+            colleges = models.Colleges.objects.all()
+            majors = models.Majors.objects.all()
+            return render(request, 'teacher_tripartite_info.html', {'colleges': colleges, 'majors': majors})
+        elif module == 'page':
+            pageIndex = int(request.GET.get('pageIndex', 1))
+            pageSize = int(request.GET.get('pageSize', 10))
+            collegeId = request.GET.get('collegeId')
+            majorId = request.GET.get('majorId')
+            keyword = request.GET.get('keyword')
+
+            queryset = models.TripartiteInfo.objects.all()
+            if collegeId:
+                queryset = queryset.filter(student__college_id=collegeId)
+            if majorId:
+                queryset = queryset.filter(student__major_id=majorId)
+            if keyword:
+                queryset = queryset.filter(
+                    models.Q(student_name__icontains=keyword) |
+                    models.Q(company_location__icontains=keyword) |
+                    models.Q(position_name__icontains=keyword)
+                )
+
+            total_count = queryset.count()
+            totalPage = (total_count + pageSize - 1) // pageSize
+            start = (pageIndex - 1) * pageSize
+            end = start + pageSize
+            data_list = queryset[start:end]
+
+            result = []
+            for item in data_list:
+                result.append({
+                    'id': item.id,
+                    'student_name': item.student_name,
+                    'company_location': item.company_location,
+                    'company_scale': item.company_scale,
+                    'salary': item.salary,
+                    'position_name': item.position_name,
+                    'position_category': item.position_category,
+                    'company_category': item.company_category,
+                    'school': item.school,
+                    'college_name': item.student.college.name,
+                    'major_name': item.student.major.name,
+                    'status': item.status
+                })
+
+            data = {
+                'list': result,
+                'totalPage': totalPage
+            }
+            return JsonResponse({'code': 0, 'data': data})
+        elif module == 'audit':
+            id = request.POST.get('id')
+            status = request.POST.get('status')
+            try:
+                tripartite_info = models.TripartiteInfo.objects.get(id=id)
+                tripartite_info.status = status
+                tripartite_info.save()
+                return JsonResponse({'code': 0, 'msg': '审核成功'})
+            except models.TripartiteInfo.DoesNotExist:
+                return JsonResponse({'code': 1, 'msg': '三方信息不存在'})
         else:
             return self.error()
 
@@ -1332,5 +1393,7 @@ class TripartiteInfoView(BaseView):
                 student=student
             )
             return JsonResponse({'status': 'success', 'message': '三方信息提交成功，等待审核'})
+        elif module == 'audit':
+            return self.get(request, module, *args, **kwargs)
         else:
             return self.error()

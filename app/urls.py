@@ -13,5 +13,5 @@ urlpatterns = [
     path('educationLogs/<str:module>/', app.views.EducationLogsView.as_view()),
     path('projectLogs/<str:module>/', app.views.ProjectLogsView.as_view()),
     path('sendLogs/<str:module>/', app.views.SendLogs.as_view()),
-    path('tripartite_info/<str:module>/', app.views.TripartiteInfoView.as_view(), name='tripartite_info'),
+    path('tripartite_info/<path:module>/', app.views.TripartiteInfoView.as_view()),
 ]

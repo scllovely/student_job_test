@@ -37,7 +37,7 @@
                 <input type="text" name="keyword" placeholder="请输入关键词……"/>
             </div>
             <div class="fater-form-inline">
-                <button type="button" class="fater-btn fater-btn-form-qry">
+                <button type="button" id="searchBtn" class="fater-btn fater-btn-form-qry">
                     <span class="fa fa-search"></span>
                 </button>
             </div>
@@ -51,6 +51,7 @@
         </div>
         <div class="fater-pannel-body">
             <div id="tableShow"></div>
+            <div id="pagination"></div>
         </div>
     </div>
 </div>
@@ -65,9 +66,9 @@
             <div class="fater-form-item">
                 <label>审核状态</label>
                 <select name="status">
-                    <option value="0">待审核</option>
-                    <option value="1">已通过</option>
-                    <option value="2">未通过</option>
+                    <option value="待审核">待审核</option>
+                    <option value="已通过">已通过</option>
+                    <option value="未通过">未通过</option>
                 </select>
             </div>
             <input type="hidden" name="id"/>
@@ -83,5 +84,7 @@
     </div>
 </div>
 
+{% include 'templates/commjs.html' %}
+<script src="{% static 'js/teacher_tripartite_info.js' %}"></script>
 </body>
 </html>

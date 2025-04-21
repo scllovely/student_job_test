@@ -134,7 +134,9 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 
 STATIC_URL = '/static/'
 
+# PROJECT_PATH = 'D:\\Pycharm_all_project\\studentYC-master2'
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+# print("这个是"+PROJECT_PATH)
 STATIC_ROOT = os.path.join(os.path.dirname(PROJECT_PATH), 'static')
 STATICFILES_DIRS = (
     ("css", os.path.join(STATIC_ROOT, 'css')),
