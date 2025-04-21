@@ -80,9 +80,6 @@ class SendLogs(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE, db_column='student_id')
     class Meta:
         db_table = 'send_logs'  #
-# studentYC/app/models.py
-from django.db import models
-from .models import Students  # 假设 Students 模型已定义
 
 class TripartiteInfo(models.Model):
     company_location = models.CharField(max_length=200, verbose_name='公司所在地')
