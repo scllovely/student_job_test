@@ -1,0 +1,117 @@
+<!-- pages/tripartite_info.html -->
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'templates/head.html' %}
+<head>
+    <style>
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        /* 表头样式 */
+        th {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        /* 表格单元格样式 */
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        /* 奇偶行颜色区分 */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* 鼠标悬停行样式 */
+        tr:hover {
+            background-color: #e5f6ff;
+        }
+
+        /* 按钮样式 */
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* 按钮悬停样式 */
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="fater-layout-header">
+    {% include 'templates/nav.html' %}
+</div>
+
+<div class="fater-layout-menus">
+    {% include 'templates/menus.html' %}
+</div>
+
+<div class="fater-layout-body">
+    <div class="fater-panel">
+        <div class="fater-pannel-title">
+            三方信息管理
+        </div>
+        <div class="fater-pannel-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>学生姓名</th>
+                        <th>学生身份证号</th>
+                        <th>公司所在地</th>
+                        <th>公司规模</th>
+                        <th>薪资</th>
+                        <th>岗位名称</th>
+                        <th>岗位类别</th>
+                        <th>公司类别</th>
+                        <th>学生所在学校</th>
+                        <th>学院</th>
+                        <th>专业名称</th>
+                        <th>审核状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for info in tripartite_info %}
+                    <tr>
+                        <td>{{ info.student_name }}</td>
+                        <td>{{ info.student_id_card }}</td>
+                        <td>{{ info.company_location }}</td>
+                        <td>{{ info.company_scale }}</td>
+                        <td>{{ info.salary }}</td>
+                        <td>{{ info.position_name }}</td>
+                        <td>{{ info.position_category }}</td>
+                        <td>{{ info.company_category }}</td>
+                        <td>{{ info.school }}</td>
+                        <td>{{ info.college }}</td>
+                        <td>{{ info.major }}</td>
+                        <td>{{ info.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" onclick="window.location.href='/jobs/tripartite_info/add/'">填写三方信息</button>
+        </div>
+    </div>
+</div>
+
+<div class="fater-layout-foot">
+    {% include 'templates/foot.html' %}
+</div>
+
+{% include 'templates/commjs.html' %}
+</body>
+</html>
