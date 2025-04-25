@@ -1397,3 +1397,431 @@ class TripartiteInfoView(BaseView):
             return self.get(request, module, *args, **kwargs)
         else:
             return self.error()
+
+'''
+可视化
+'''
+import pandas as pd
+import matplotlib.pyplot as plt
+from pyecharts.charts import Bar, Pie
+from pyecharts import options as opts
+from django.http import JsonResponse
+from django.shortcuts import render
+from .models import TripartiteInfo
+from .views import BaseView
+
+# class GraduateEmploymentAnalysisView(BaseView):
+#     def get(self, request, module, *args, **kwargs):
+#         if module == 'show':
+#             # 检查用户是否为管理员
+#             if request.session.get('type') != 0:
+#                 return self.error()
+#
+#             # 获取三方信息数据
+#             tripartite_info = TripartiteInfo.objects.all().values()
+#             df = pd.DataFrame(list(tripartite_info))
+#
+#             # 数据统计和分析
+#             location_count = df['company_location'].value_counts()
+#             size_count = df['company_scale'].value_counts()
+#             type_count = df['company_category'].value_counts()
+#             position_type_count = df['position_category'].value_counts()
+#
+#             # 使用 Matplotlib 绘制柱状图
+#             plt.figure(figsize=(12, 8))
+#
+#             plt.subplot(2, 2, 1)
+#             location_count.plot(kind='bar')
+#             plt.title('公司所在地分布')
+#             plt.xlabel('所在地')
+#             plt.ylabel('数量')
+#
+#             plt.subplot(2, 2, 2)
+#             size_count.plot(kind='bar')
+#             plt.title('公司规模分布')
+#             plt.xlabel('规模')
+#             plt.ylabel('数量')
+#
+#             plt.subplot(2, 2, 3)
+#             type_count.plot(kind='bar')
+#             plt.title('公司类别分布')
+#             plt.xlabel('类别')
+#             plt.ylabel('数量')
+#
+#             plt.subplot(2, 2, 4)
+#             position_type_count.plot(kind='bar')
+#             plt.title('岗位类别分布')
+#             plt.xlabel('岗位类别')
+#             plt.ylabel('数量')
+#
+#             plt.tight_layout()
+#             plt.savefig('static/graduate_employment_analysis.png')
+#
+#             # 使用 PyCharts 绘制饼图
+#             location_pie = (
+#                 Pie()
+#                 .add(
+#                     "公司所在地",
+#                     [list(z) for z in zip(location_count.index, location_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司所在地分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             location_pie_json = location_pie.dump_options_with_quotes()
+#
+#             size_pie = (
+#                 Pie()
+#                 .add(
+#                     "公司规模",
+#                     [list(z) for z in zip(size_count.index, size_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司规模分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             size_pie_json = size_pie.dump_options_with_quotes()
+#
+#             type_pie = (
+#                 Pie()
+#                 .add(
+#                     "公司类别",
+#                     [list(z) for z in zip(type_count.index, type_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司类别分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             type_pie_json = type_pie.dump_options_with_quotes()
+#
+#             position_type_pie = (
+#                 Pie()
+#                 .add(
+#                     "岗位类别",
+#                     [list(z) for z in zip(position_type_count.index, position_type_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="岗位类别分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             position_type_pie_json = position_type_pie.dump_options_with_quotes()
+#
+#             return render(request, 'graduate_employment_analysis.html', {
+#                 'location_pie_json': location_pie_json,
+#                 'size_pie_json': size_pie_json,
+#                 'type_pie_json': type_pie_json,
+#                 'position_type_pie_json': position_type_pie_json
+#             })
+#         else:
+#             return self.error()
+import pandas as pd
+from pyecharts.charts import Bar, Pie
+from pyecharts import options as opts
+from django.http import JsonResponse
+from django.shortcuts import render
+from .models import TripartiteInfo
+from .views import BaseView
+
+# class GraduateEmploymentAnalysisView(BaseView):
+#     def get(self, request, module, *args, **kwargs):
+#         if module == 'show':
+#             # 检查用户是否为管理员
+#             if request.session.get('type') != 0:
+#                 return self.error()
+#
+#             # 获取三方信息数据
+#             tripartite_info = TripartiteInfo.objects.all().values()
+#             df = pd.DataFrame(list(tripartite_info))
+#
+#             # 数据统计和分析
+#             location_count = df['company_location'].value_counts()
+#             size_count = df['company_scale'].value_counts()
+#             type_count = df['company_category'].value_counts()
+#             position_type_count = df['position_category'].value_counts()
+#
+#             # 使用 PyCharts 绘制柱状图
+#             location_bar = (
+#                 Bar()
+#                 .add_xaxis(location_count.index.tolist())
+#                 .add_yaxis("数量", location_count.values.tolist())
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司所在地分布"),
+#                     xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#             )
+#             location_bar_json = location_bar.dump_options_with_quotes()
+#
+#             size_bar = (
+#                 Bar()
+#                 .add_xaxis(size_count.index.tolist())
+#                 .add_yaxis("数量", size_count.values.tolist())
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司规模分布"),
+#                     xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#             )
+#             size_bar_json = size_bar.dump_options_with_quotes()
+#
+#             type_bar = (
+#                 Bar()
+#                 .add_xaxis(type_count.index.tolist())
+#                 .add_yaxis("数量", type_count.values.tolist())
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司类别分布"),
+#                     xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#             )
+#             type_bar_json = type_bar.dump_options_with_quotes()
+#
+#             position_type_bar = (
+#                 Bar()
+#                 .add_xaxis(position_type_count.index.tolist())
+#                 .add_yaxis("数量", position_type_count.values.tolist())
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="岗位类别分布"),
+#                     xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#             )
+#             position_type_bar_json = position_type_bar.dump_options_with_quotes()
+#
+#             # 使用 PyCharts 绘制饼图
+#             location_pie = (
+#                 Pie()
+#                 .add(
+#                     "公司所在地",
+#                     [list(z) for z in zip(location_count.index, location_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司所在地分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             location_pie_json = location_pie.dump_options_with_quotes()
+#
+#             size_pie = (
+#                 Pie()
+#                 .add(
+#                     "公司规模",
+#                     [list(z) for z in zip(size_count.index, size_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司规模分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             size_pie_json = size_pie.dump_options_with_quotes()
+#
+#             type_pie = (
+#                 Pie()
+#                 .add(
+#                     "公司类别",
+#                     [list(z) for z in zip(type_count.index, type_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="公司类别分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             type_pie_json = type_pie.dump_options_with_quotes()
+#
+#             position_type_pie = (
+#                 Pie()
+#                 .add(
+#                     "岗位类别",
+#                     [list(z) for z in zip(position_type_count.index, position_type_count.values)],
+#                     radius=["30%", "75%"],
+#                 )
+#                 .set_global_opts(
+#                     title_opts=opts.TitleOpts(title="岗位类别分布"),
+#                     legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                     toolbox_opts=opts.ToolboxOpts(is_show=True)
+#                 )
+#                 .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#             )
+#             position_type_pie_json = position_type_pie.dump_options_with_quotes()
+#
+#             return render(request, 'graduate_employment_analysis.html', {
+#                 'location_bar_json': location_bar_json,
+#                 'size_bar_json': size_bar_json,
+#                 'type_bar_json': type_bar_json,
+#                 'position_type_bar_json': position_type_bar_json,
+#                 'location_pie_json': location_pie_json,
+#                 'size_pie_json': size_pie_json,
+#                 'type_pie_json': type_pie_json,
+#                 'position_type_pie_json': position_type_pie_json
+#             })
+#         else:
+#             return self.error()
+# class GraduateEmploymentAnalysisView(BaseView):
+#     def get(self, request, module, *args, **kwargs):
+#         if module == 'show':
+#             # 检查用户是否为管理员
+#             if request.session.get('type') != 0:
+#                 return self.error()
+#
+#             # 获取三方信息数据
+#             tripartite_info = TripartiteInfo.objects.all().values()
+#             df = pd.DataFrame(list(tripartite_info))
+#
+#             # 数据统计和分析
+#             location_count = df['company_location'].value_counts()
+#             size_count = df['company_scale'].value_counts()
+#             type_count = df['company_category'].value_counts()
+#             position_type_count = df['position_category'].value_counts()
+#
+#             # 使用 PyCharts 生成图表配置（JSON 可序列化）
+#             location_bar = self._create_bar_chart(location_count, "公司所在地分布")
+#             size_bar = self._create_bar_chart(size_count, "公司规模分布")
+#             type_bar = self._create_bar_chart(type_count, "公司类别分布")
+#             position_type_bar = self._create_bar_chart(position_type_count, "岗位类别分布")
+#
+#             location_pie = self._create_pie_chart(location_count, "公司所在地分布")
+#             size_pie = self._create_pie_chart(size_count, "公司规模分布")
+#             type_pie = self._create_pie_chart(type_count, "公司类别分布")
+#             position_type_pie = self._create_pie_chart(position_type_count, "岗位类别分布")
+#
+#             return render(request, 'graduate_employment_analysis.html', {
+#                 'location_bar': location_bar,
+#                 'size_bar': size_bar,
+#                 'type_bar': type_bar,
+#                 'position_type_bar': position_type_bar,
+#                 'location_pie': location_pie,
+#                 'size_pie': size_pie,
+#                 'type_pie': type_pie,
+#                 'position_type_pie': position_type_pie,
+#             })
+#         else:
+#             return self.error()
+#
+#     def _create_bar_chart(self, data, title):
+#         """生成柱状图配置"""
+#         chart = (
+#             Bar()
+#             .add_xaxis(data.index.tolist())
+#             .add_yaxis("数量", data.values.tolist())
+#             .set_global_opts(
+#                 title_opts=opts.TitleOpts(title=title),
+#                 xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
+#                 toolbox_opts=opts.ToolboxOpts(is_show=True)
+#             )
+#         )
+#         return chart.dump_options()  # 返回 JSON 格式的配置
+#
+#     def _create_pie_chart(self, data, title):
+#         """生成饼图配置"""
+#         chart = (
+#             Pie()
+#             .add(
+#                 title,
+#                 [list(z) for z in zip(data.index, data.values)],
+#                 radius=["30%", "75%"],
+#             )
+#             .set_global_opts(
+#                 title_opts=opts.TitleOpts(title=title),
+#                 legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+#                 toolbox_opts=opts.ToolboxOpts(is_show=True)
+#             )
+#             .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+#         )
+#         return chart.dump_options()  # 返回 JSON 格式的配置
+class GraduateEmploymentAnalysisView(BaseView):
+    def get(self, request, module, *args, **kwargs):
+        if module == 'show':
+            # 检查用户是否为管理员
+            if request.session.get('type') != 0:
+                return self.error()
+
+            # 获取三方信息数据
+            tripartite_info = TripartiteInfo.objects.all().values()
+            df = pd.DataFrame(list(tripartite_info))
+
+            # 数据统计和分析
+            location_count = df['company_location'].value_counts()
+            size_count = df['company_scale'].value_counts()
+            type_count = df['company_category'].value_counts()
+            position_type_count = df['position_category'].value_counts()
+
+            # 使用 PyCharts 生成图表配置（JSON 可序列化）
+            location_bar = self._create_bar_chart(location_count, "公司所在地分布")
+            size_bar = self._create_bar_chart(size_count, "公司规模分布")
+            type_bar = self._create_bar_chart(type_count, "公司类别分布")
+            position_type_bar = self._create_bar_chart(position_type_count, "岗位类别分布")
+
+            location_pie = self._create_pie_chart(location_count, "公司所在地分布")
+            size_pie = self._create_pie_chart(size_count, "公司规模分布")
+            type_pie = self._create_pie_chart(type_count, "公司类别分布")
+            position_type_pie = self._create_pie_chart(position_type_count, "岗位类别分布")
+
+            return render(request, 'graduate_employment_analysis.html', {
+                'location_bar': location_bar,
+                'size_bar': size_bar,
+                'type_bar': type_bar,
+                'position_type_bar': position_type_bar,
+                'location_pie': location_pie,
+                'size_pie': size_pie,
+                'type_pie': type_pie,
+                'position_type_pie': position_type_pie,
+            })
+        else:
+            return self.error()
+
+    def _create_bar_chart(self, data, title):
+        """生成柱状图配置"""
+        chart = (
+            Bar()
+            .add_xaxis(data.index.tolist())
+            .add_yaxis("数量", data.values.tolist())
+            .set_global_opts(
+                title_opts=opts.TitleOpts(title=title),
+                xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
+                toolbox_opts=opts.ToolboxOpts(is_show=True)
+            )
+        )
+        return chart.dump_options()  # 返回 JSON 格式的配置
+
+    def _create_pie_chart(self, data, title):
+        """生成饼图配置"""
+        chart = (
+            Pie()
+            .add(
+                title,
+                [list(z) for z in zip(data.index, data.values)],
+                radius=["30%", "75%"],
+            )
+            .set_global_opts(
+                title_opts=opts.TitleOpts(title=title),
+                legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
+                toolbox_opts=opts.ToolboxOpts(is_show=True)
+            )
+            .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
+        )
+        return chart.dump_options()

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'templates/head.html' %}
+<body>
+<div class="fater-layout-header">
+    {% include 'templates/nav.html' %}
+</div>
+
+<div class="fater-layout-menus">
+    {% include 'templates/menus.html' %}
+</div>
+
+<div class="fater-layout-body">
+    <h1>毕业生去向数据分析</h1>
+
+    <h2>公司所在地分布（柱状图）</h2>
+    <div id="location_bar" style="width: 1000px; height: 600px;"></div>
+
+    <h2>公司规模分布（柱状图）</h2>
+    <div id="size_bar" style="width: 1000px; height: 600px;"></div>
+
+    <h2>公司类别分布（柱状图）</h2>
+    <div id="type_bar" style="width: 1000px; height: 600px;"></div>
+
+    <h2>岗位类别分布（柱状图）</h2>
+    <div id="position_type_bar" style="width: 1000px; height: 600px;"></div>
+
+    <h2>公司所在地分布（饼图）</h2>
+    <div id="location_pie" style="width: 600px; height: 400px;"></div>
+
+    <h2>公司规模分布（饼图）</h2>
+    <div id="size_pie" style="width: 600px; height: 400px;"></div>
+
+    <h2>公司类别分布（饼图）</h2>
+    <div id="type_pie" style="width: 600px; height: 400px;"></div>
+
+    <h2>岗位类别分布（饼图）</h2>
+    <div id="position_type_pie" style="width: 600px; height: 400px;"></div>
+
+    <script src="https://cdn.staticfile.org/echarts/5.4.2/echarts.min.js"></script>
+    <script>
+        var location_bar = echarts.init(document.getElementById('location_bar'));
+        location_bar.setOption({{ location_bar|safe }});
+
+        var size_bar = echarts.init(document.getElementById('size_bar'));
+        size_bar.setOption({{ size_bar|safe }});
+
+        var type_bar = echarts.init(document.getElementById('type_bar'));
+        type_bar.setOption({{ type_bar|safe }});
+
+        var position_type_bar = echarts.init(document.getElementById('position_type_bar'));
+        position_type_bar.setOption({{ position_type_bar|safe }});
+
+        var location_pie = echarts.init(document.getElementById('location_pie'));
+        location_pie.setOption({{ location_pie|safe }});
+
+        var size_pie = echarts.init(document.getElementById('size_pie'));
+        size_pie.setOption({{ size_pie|safe }});
+
+        var type_pie = echarts.init(document.getElementById('type_pie'));
+        type_pie.setOption({{ type_pie|safe }});
+
+        var position_type_pie = echarts.init(document.getElementById('position_type_pie'));
+        position_type_pie.setOption({{ position_type_pie|safe }});
+    </script>
+</div>
+
+<div class="fater-layout-foot">
+    {% include 'templates/foot.html' %}
+</div>
+
+{% include 'templates/commjs.html' %}
+</body>
+</html>
