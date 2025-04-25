@@ -1766,62 +1766,24 @@ class GraduateEmploymentAnalysisView(BaseView):
 
             # 数据统计和分析
             location_count = df['company_location'].value_counts()
-            size_count = df['company_scale'].value_counts()
             type_count = df['company_category'].value_counts()
-            position_type_count = df['position_category'].value_counts()
 
-            # 使用 PyCharts 生成图表配置（JSON 可序列化）
-            location_bar = self._create_bar_chart(location_count, "公司所在地分布")
-            size_bar = self._create_bar_chart(size_count, "公司规模分布")
-            type_bar = self._create_bar_chart(type_count, "公司类别分布")
-            position_type_bar = self._create_bar_chart(position_type_count, "岗位类别分布")
+            # 转换为适合 ECharts 使用的格式
+            location_data = [{"name": key, "value": value} for key, value in location_count.items()]
+            type_data = [{"name": key, "value": value} for key, value in type_count.items()]
 
-            location_pie = self._create_pie_chart(location_count, "公司所在地分布")
-            size_pie = self._create_pie_chart(size_count, "公司规模分布")
-            type_pie = self._create_pie_chart(type_count, "公司类别分布")
-            position_type_pie = self._create_pie_chart(position_type_count, "岗位类别分布")
+            # 计算总计数量
+            location_total = sum(location_count.values)
+            type_total = sum(type_count.values)
 
-            return render(request, 'graduate_employment_analysis.html', {
-                'location_bar': location_bar,
-                'size_bar': size_bar,
-                'type_bar': type_bar,
-                'position_type_bar': position_type_bar,
-                'location_pie': location_pie,
-                'size_pie': size_pie,
-                'type_pie': type_pie,
-                'position_type_pie': position_type_pie,
-            })
+            context = {
+                'location_data': location_data,
+                'type_data': type_data,
+                'location_total': location_total,
+                'type_total': type_total
+            }
+            print(location_total, type_total, context)
+            return render(request, 'analysistest.html', context)
+
         else:
             return self.error()
-
-    def _create_bar_chart(self, data, title):
-        """生成柱状图配置"""
-        chart = (
-            Bar()
-            .add_xaxis(data.index.tolist())
-            .add_yaxis("数量", data.values.tolist())
-            .set_global_opts(
-                title_opts=opts.TitleOpts(title=title),
-                xaxis_opts=opts.AxisOpts(axislabel_opts={"rotate": 45}),
-                toolbox_opts=opts.ToolboxOpts(is_show=True)
-            )
-        )
-        return chart.dump_options()  # 返回 JSON 格式的配置
-
-    def _create_pie_chart(self, data, title):
-        """生成饼图配置"""
-        chart = (
-            Pie()
-            .add(
-                title,
-                [list(z) for z in zip(data.index, data.values)],
-                radius=["30%", "75%"],
-            )
-            .set_global_opts(
-                title_opts=opts.TitleOpts(title=title),
-                legend_opts=opts.LegendOpts(orient="vertical", pos_top="15%", pos_left="2%"),
-                toolbox_opts=opts.ToolboxOpts(is_show=True)
-            )
-            .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c} ({d}%)"))
-        )
-        return chart.dump_options()

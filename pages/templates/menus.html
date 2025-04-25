@@ -4,9 +4,14 @@
 <input id="sessionUserType" type="hidden" value="{{ request.session.type }}">
 {% if request.session.type == 0 %}
 <div class="fater-menu-vertical">
-    <div class="fater-menu-item">
-        <a href="/jobs/show/">
-            <span class="fa fa-home"></span> 系统首页
+{#    <div class="fater-menu-item">#}
+{#        <a href="/jobs/show/">#}
+{#            <span class="fa fa-home"></span> 系统首页#}
+{#        </a>#}
+{#    </div>#}
+        <div class="fater-menu-item">
+        <a href="/jobs/graduate_employment_analysis/show/">
+            <span class="fa fa-chart-bar"></span> 毕业生去向数据分析
         </a>
     </div>
     <div class="fater-menu-item">
@@ -60,11 +65,7 @@
             <span class="fa fa-file-text-o"></span> 三方信息管理
         </a>
     </div>
-    <div class="fater-menu-item">
-        <a href="/jobs/graduate_employment_analysis/show/">
-            <span class="fa fa-chart-bar"></span> 毕业生去向数据分析
-        </a>
-    </div>
+
 </div>
 {% elif  request.session.type == 1 %}
 <div class="fater-menu-vertical">
