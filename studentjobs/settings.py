@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'studentjobs.wsgi.application'
 DATABASES = {
     'default':
     {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql', # 数据库引擎
         'NAME': 'student_jobs',
         'HOST': 'localhost',
         'PORT': 3306,
