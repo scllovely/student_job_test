@@ -11,8 +11,16 @@ class Majors(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
     name = models.CharField('专业名称',  max_length=32, null=False)
     createTime = models.CharField('建立时间', db_column='create_time', max_length=19)
+    college = models.ForeignKey(Colleges, on_delete=models.CASCADE, db_column='college_id')
     class Meta:
         db_table = 'majors'
+
+class Class(models.Model):
+    class_id = models.AutoField('班级编号', primary_key=True)
+    class_name = models.CharField('班级名称', max_length=32, null=False)
+    major = models.ForeignKey(Majors, on_delete=models.CASCADE, db_column='major_id')
+    class Meta:
+        db_table = 'class'
 
 class Companies(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
@@ -32,7 +40,7 @@ class Jobs(models.Model):
         db_table = 'jobs'
 
 class Users(models.Model):
-    id = models.AutoField('记录编号', primary_key=True)
+    id = models.AutoField('用户id', primary_key=True)
     userName = models.CharField('用户账号', db_column='user_name', max_length=32, null=False)
     passWord = models.CharField('用户密码', db_column='pass_word', max_length=32, null=False)
     name = models.CharField('用户姓名', max_length=20, null=False)
@@ -51,8 +59,14 @@ class Students(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='user_id')  # 外键关联用户表
     college = models.ForeignKey(Colleges, on_delete=models.CASCADE, db_column='college_id') # 外键关联Colleges表
     major = models.ForeignKey(Majors, on_delete=models.CASCADE, db_column='major_id') # 外键关联Majors表
+    # 新增字段
+    phone_number = models.CharField('联系电话', max_length=11, null=False)
+    name = models.CharField('姓名', max_length=20, null=False)
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id')
+    gender = models.CharField('用户性别', max_length=4, null=False)
     class Meta:
         db_table = 'students'
+# 新增班级表
 
 class EducationLogs(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
@@ -99,7 +113,7 @@ class TripartiteInfo(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE, verbose_name='学生')
     status = models.CharField(max_length=20, default='待审核', verbose_name='审核状态')
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
-
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id')
     class Meta:
         db_table = 'tripartite_info'
         verbose_name = '三方信息'

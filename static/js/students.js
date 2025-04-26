@@ -64,11 +64,11 @@ $(function (){
 				title: "学生学号",
 				align: "center",
 			},
-			{
-				field: "userName",
-				title: "学生账号",
-				align: "center",
-			},
+			// {
+			// 	field: "userName",
+			// 	title: "学生账号",
+			// 	align: "center",
+			// },
 			{
 				field: "name",
 				title: "学生姓名",
@@ -86,12 +86,12 @@ $(function (){
 			},
 			{
 				field: "phone",
-				title: "学生电话",
+				title: "联系电话",
 				align: "center",
 			},
 			{
 				field: "address",
-				title: "联系电话",
+				title: "籍贯",
 				align: "center",
 			},
 			{
@@ -107,6 +107,11 @@ $(function (){
 			{
 				field: "majorName",
 				title: "所学专业",
+				align: "center",
+			},
+            {
+				field: "className",
+				title: "所在班级",
 				align: "center",
 			},
 			{
@@ -146,6 +151,7 @@ $(function (){
         tableView.where["phone"] = $("[name=para3]").val();
         tableView.where["collegeId"] = $("[name=para4]").val();
         tableView.where["majorId"] = $("[name=para5]").val();
+        tableView.where["classId"] = $("[name=para6]").val();
 
         $.table(tableView);
     });

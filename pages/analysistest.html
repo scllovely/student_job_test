@@ -63,15 +63,19 @@
         // 从后端获取数据
         const locationData = {{ location_data|safe }};
         const typeData = {{ type_data|safe }};
+        const collegeData = {{ college_data|safe }};
+
         const locationTotal = {{ location_total }};
         const typeTotal = {{ type_total }};
+        const collegeTotal = {{ college_total }};
+
 
         option = {
             tooltip: {},
             title: [
                 {
                     text: '各学院毕业人数',
-                    subtext: '总计 ' + locationTotal,
+                    subtext: '总计 ' + collegeTotal,
                     left: '25%',
                     textAlign: 'center'
                 },
@@ -108,7 +112,7 @@
             xAxis: [
                 {
                     type: 'value',
-                    max: locationTotal,
+                    max: collegeTotal,
                     splitLine: {
                         show: false
                     }
@@ -125,7 +129,7 @@
             yAxis: [
                 {
                     type: 'category',
-                    data: locationData.map(item => item.name),
+                    data: collegeData.map(item => item.name),
                     axisLabel: {
                         interval: 0,
                         rotate: 30
@@ -156,7 +160,7 @@
                         position: 'right',
                         show: true
                     },
-                    data: locationData.map(item => item.value)
+                    data: collegeData.map(item => item.value)
                 },
                 {
                     type: 'bar',
@@ -165,7 +169,7 @@
                     itemStyle: {
                         color: '#eee'
                     },
-                    data: locationData.map(item => locationTotal - item.value)
+                    data: collegeData.map(item => collegeTotal - item.value)
                 },
                 {
                     type: 'bar',

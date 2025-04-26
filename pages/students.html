@@ -3,6 +3,7 @@
 <html>
 {% include 'templates/head.html' %}
 <body>
+<script src="{% static 'js/students.js' %}" type="text/javascript"></script>
 <div class="fater-layout-header">
     {% include 'templates/nav.html' %}
 </div>
@@ -40,6 +41,14 @@
                     {% for item in majors %}
                     <option value="{{ item.id }}">{{ item.name }}</option>
                     {% endfor %}
+                </select>
+            </div>
+            <div class="fater-form-inline">
+               <select name="para6">
+                  <option value="">选择班级</option>
+                  {% for item in classes %}
+                    <option value="{{ item.class_id }}">{{ item.class_name }}</option>
+                  {% endfor %}
                 </select>
             </div>
             <div class="fater-form-inline">
@@ -125,6 +134,15 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="fater-form-item">
+                <label>所在班级</label>
+               <select name="classId">
+                  <option value="">选择班级</option>
+                  {% for item in classes %}
+                    <option value="{{ item.class_id }}">{{ item.class_name }}</option>
+                  {% endfor %}
+                </select>
+            </div>
             <input type="hidden" name="type" value="2"/>
             <input type="hidden" name="status" value="0"/>
             <div class="fater-form-btns">
@@ -170,6 +188,15 @@
                     {% for item in majors %}
                     <option value="{{ item.id }}">{{ item.name }}</option>
                     {% endfor %}
+                </select>
+            </div>
+            <div class="fater-form-item">
+                <label>所在班级</label>
+               <select name="class_id">
+                  <option value="">选择班级</option>
+                  {% for item in classes %}
+                    <option value="{{ item.class_id }}">{{ item.class_name }}</option>
+                  {% endfor %}
                 </select>
             </div>
             <input type="hidden" name="id"/>
