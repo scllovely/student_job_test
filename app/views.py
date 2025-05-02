@@ -110,7 +110,6 @@ class SysView(BaseView):
     def post(self, request, module, *args, **kwargs):
 
         if module == 'login':
-
             return SysView.jwxt_login(request)
 
         if module == 'info':
@@ -120,84 +119,37 @@ class SysView(BaseView):
             return SysView.updSessionPwd(request)
 
     def jwxt_login(request):
-        userName = request.POST.get('userName')
-        passWord = request.POST.get('passWord')
-        qygly = models.Users.objects.filter(userName=userName)
-        if (qygly.exists()):
-            user = qygly.first()
-            if user.passWord == passWord:
-                request.session["user"] = user.id
-                request.session['type'] = user.type
-                return SysView.success()
-        url = 'https://api.cyymzy.com/items/login'
-        rsp = requests.post(url, data=json.dumps({'username': userName, 'password': passWord}))
-        resl = rsp.json()
-        if resl['message'] == '登录成功':
-            gender = resl['gender']
-            age = 18  # 你可以在这里指定年龄
-            phone = resl['phone'] if resl['type'] == '教师' else '88888888'
-            user_type = 0 if resl['type'] == '教师' else 2
-
-            user_instance = models.Users.objects.create(
-                userName=userName,
-                passWord=passWord,
-                name=resl['name'],
-                gender=gender,
-                age=age,
-                phone=phone,
-                type=user_type
-            )
-
-            request.session['user'] = user_instance.id
-            request.session['type'] = user_instance.type
-
-            if user_type == 2:  # 学生
-                college = models.Colleges.objects.get(name=resl['college'])  # 确保数据库中有这个学院
-                major = models.Majors.objects.get(name=resl['major'])  # 确保数据库中有这个专业
-
-                student, created = models.Students.objects.get_or_create(
-                    id=resl['id'],
-                    defaults={
-                        'user': user_instance,
-                        'address': '无',  # 或从 resl 中提取，如果API有返回
-                        'birthday': '无',  # 或从 resl 中提取，如果API有返回
-                        'status': 0,  # 需要根据实际逻辑提供正确的状态值
-                        'college': college,
-                        'major': major,
-                        # 根据需要添加其他字段的默认值
-                    }
-                )
-
-                if not created:
-                    # 如果学生记录已经存在，则根据需要更新它
-                    # 例如，更新学生的状态或其他信息
-                    student.status = 1  # 或根据实际情况更新状态
-                    student.save()
-                # request.session['user'] = user_instance.id
-                # request.session['type'] = user_instance.type
-            return SysView.success(resl['message'])
-        else:
-            SysView.warn(resl['message'])
-
-        return SysView.warn(resl['message'])
-
-    # def login(request):
-
-    #     userName = request.POST.get('userName')
-    #     passWord = request.POST.get('passWord')
-    #
-    #     user = models.Users.objects.filter(userName=userName)  # 查询用户是否存在
-    #     if (user.exists()):  # 用户存在
-    #         user = user.first()
-    #         if user.passWord == passWord:
-    #             request.session["user"] = user.id
-    #             request.session["type"] = user.type
-    #
-    #             return SysView.success()
-    #         else:
-    #             return SysView.warn('用户密码输入错误')
-    #     else:
-    #         return SysView.warn('用户名输入错误')
+        if request.method == "POST":
+            userName = request.POST.get("userName")
+            passWord = request.POST.get("passWord")
+            
+            # 检查用户名是否存在
+            user = models.Users.objects.filter(userName=userName).first()
+            if not user:
+                return JsonResponse({
+                    "code": 1,
+                    "msg": "账号不存在"
+                })
+            
+            # 检查密码是否正确
+            if user.passWord != passWord:
+                return JsonResponse({
+                    "code": 1,
+                    "msg": "密码不正确"
+                })
+            
+            # 登录成功，设置session信息
+            request.session["user"] = user.id
+            request.session["type"] = user.type
+            request.session["userName"] = userName
+            
+            return JsonResponse({
+                "code": 0,
+                "msg": "登录成功",
+                "type": user.type  # 添加用户类型到响应中
+            })
+        
+        return render(request, "login.html")
 
     def getSessionInfo(request):
 
@@ -1321,7 +1273,10 @@ class TripartiteInfoView(BaseView):
             tripartite_info = models.TripartiteInfo.objects.filter(student=student)
             return render(request, 'tripartite_info.html', {'tripartite_info': tripartite_info})
         elif module == 'add':
-            return render(request, 'add_tripartite_info.html')
+            user = request.session.get('user')
+            student = models.Students.objects.filter(user__id=user).first()
+            tripartite_info = models.TripartiteInfo.objects.filter(student=student)
+            return render(request, 'add_tripartite_info.html',{'student': student})
         elif module == 'teacher/show':
             colleges = models.Colleges.objects.all()
             majors = models.Majors.objects.all()
@@ -1333,7 +1288,7 @@ class TripartiteInfoView(BaseView):
             majorId = request.GET.get('majorId')
             keyword = request.GET.get('keyword')
 
-            queryset = models.TripartiteInfo.objects.all()
+            queryset = models.TripartiteInfo.objects.select_related('student__college', 'student__major').all()
             if collegeId:
                 queryset = queryset.filter(student__college_id=collegeId)
             if majorId:
@@ -1357,15 +1312,17 @@ class TripartiteInfoView(BaseView):
                     'id': item.id,
                     'student_name': item.student_name,
                     'company_location': item.company_location,
+                    'company_name':item.company_name,
                     'company_scale': item.company_scale,
                     'salary': item.salary,
                     'position_name': item.position_name,
                     'position_category': item.position_category,
                     'company_category': item.company_category,
                     'school': item.school,
-                    'college_name': item.student.college.name,
-                    'major_name': item.student.major.name,
-                    'status': item.status
+                    'college_name': item.student.college.name if item.student and item.student.college else '',
+                    'major_name': item.student.major.name if item.student and item.student.major else '',
+                    'status': item.status,
+
                 })
 
             data = {
@@ -1400,9 +1357,13 @@ class TripartiteInfoView(BaseView):
                 school=request.POST.get('school'),
                 college=request.POST.get('college'),
                 major=request.POST.get('major'),
+                class_name=request.POST.get('class_name'),
+                gender =request.POST.get('gender'),
+                phone_number=request.POST.get('phone_number'),
                 student_name=request.POST.get('student_name'),
                 student_id_card=request.POST.get('student_id_card'),
                 student=student
+
             )
             return JsonResponse({'status': 'success', 'message': '三方信息提交成功，等待审核'})
         elif module == 'audit':

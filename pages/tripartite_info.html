@@ -70,17 +70,18 @@
             <table>
                 <thead>
                     <tr>
-                        <th>学生姓名</th>
-                        <th>学生身份证号</th>
+                        <th>姓名</th>
+                        <th>学校</th>
+                        <th>学院</th>
+                        <th>专业</th>
+                        <th>身份证号</th>
+                        <th>公司名称</th>
                         <th>公司所在地</th>
                         <th>公司规模</th>
                         <th>薪资</th>
                         <th>岗位名称</th>
                         <th>岗位类别</th>
                         <th>公司类别</th>
-                        <th>学生所在学校</th>
-                        <th>学院</th>
-                        <th>专业名称</th>
                         <th>审核状态</th>
                     </tr>
                 </thead>
@@ -88,16 +89,17 @@
                     {% for info in tripartite_info %}
                     <tr>
                         <td>{{ info.student_name }}</td>
+                        <td>{{ info.school }}</td>
+                        <td>{{ info.college }}</td>
+                        <td>{{ info.major }}</td>
                         <td>{{ info.student_id_card }}</td>
+                        <td>{{ info.company_name }}</td>
                         <td>{{ info.company_location }}</td>
                         <td>{{ info.company_scale }}</td>
                         <td>{{ info.salary }}</td>
                         <td>{{ info.position_name }}</td>
                         <td>{{ info.position_category }}</td>
                         <td>{{ info.company_category }}</td>
-                        <td>{{ info.school }}</td>
-                        <td>{{ info.college }}</td>
-                        <td>{{ info.major }}</td>
                         <td>{{ info.status }}</td>
                     </tr>
                     {% endfor %}

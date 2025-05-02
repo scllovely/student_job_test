@@ -21,18 +21,35 @@ $(document).ready(function() {
                 if (res.code == 0) {
                     var data = res.data;
                     var html = '<table class="fater-table">';
-                    html += '<thead><tr><th>学生姓名</th><th>公司所在地</th><th>公司规模</th><th>薪资</th><th>岗位名称</th><th>所属学院</th><th>所学专业</th><th>状态</th><th>操作</th></tr></thead>';
+                    html += '<thead>' +
+                        '<tr>' +
+                        '<th>姓名</th>' +
+                        '<th>学院</th>' +
+                        '<th>专业</th>' +
+                        '<th>公司名称</th>' +
+                        '<th>公司所在地</th>' +
+                        '<th>公司规模</th>' +
+                        '<th>薪资</th>' +
+                        '<th>岗位名称</th>' +
+                        '<th>岗位类别</th>' +
+                        '<th>公司类别</th>' +
+                        '<th>状态</th>' +
+                        '<th>操作</th>' +
+                        '</tr></thead>';
                     html += '<tbody>';
                     for (var i = 0; i < data.list.length; i++) {
                         var item = data.list[i];
                         html += '<tr>';
                         html += '<td>' + item.student_name + '</td>';
+                        html += '<td>' + item.college_name + '</td>';
+                        html += '<td>' + item.major_name + '</td>';
+                        html += '<td>' + item.company_name + '</td>';
                         html += '<td>' + item.company_location + '</td>';
                         html += '<td>' + item.company_scale + '</td>';
                         html += '<td>' + item.salary + '</td>';
                         html += '<td>' + item.position_name + '</td>';
-                        html += '<td>' + item.college_name + '</td>';
-                        html += '<td>' + item.major_name + '</td>';
+                        html += '<td>' + item.position_category + '</td>';
+                        html += '<td>' + item.company_category + '</td>';
                         html += '<td>' + item.status + '</td>';
                         html += '<td><button data-id="' + item.id + '" class="auditBtn">审核</button></td>';
                         html += '</tr>';

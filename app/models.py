@@ -63,7 +63,7 @@ class Students(models.Model):
     phone_number = models.CharField('联系电话', max_length=11, null=False)
     name = models.CharField('姓名', max_length=20, null=False)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id')
-    gender = models.CharField('用户性别', max_length=4, null=False)
+    gender = models.CharField('用户性别', max_length=4,default='女', null=False)
     class Meta:
         db_table = 'students'
 # 新增班级表
@@ -101,6 +101,7 @@ from .models import Students  # 假设 Students 模型已定义
 class TripartiteInfo(models.Model):
     company_location = models.CharField(max_length=200, verbose_name='公司所在地')
     company_scale = models.CharField(max_length=100, verbose_name='公司规模')
+    company_name = models.CharField(max_length=200, default='西安腾讯云计算有限公司',verbose_name='公司名称')
     salary = models.CharField(max_length=50, verbose_name='薪资')
     position_name = models.CharField(max_length=100, verbose_name='岗位名称')
     position_category = models.CharField(max_length=100, verbose_name='岗位类别')
@@ -113,7 +114,11 @@ class TripartiteInfo(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE, verbose_name='学生')
     status = models.CharField(max_length=20, default='待审核', verbose_name='审核状态')
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id')
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id', verbose_name='班级')
+    class_name = models.CharField(max_length=20, default='计算机214', db_column='class_name', verbose_name='所在班级')
+    gender = models.CharField(max_length=20, default='西安腾讯云计算有限公司',verbose_name='性别')
+    phone_number = models.IntegerField(verbose_name='电话')
+
     class Meta:
         db_table = 'tripartite_info'
         verbose_name = '三方信息'
