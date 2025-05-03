@@ -11,8 +11,16 @@ class Majors(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
     name = models.CharField('专业名称',  max_length=32, null=False)
     createTime = models.CharField('建立时间', db_column='create_time', max_length=19)
+    college = models.ForeignKey(Colleges, on_delete=models.CASCADE, db_column='college_id')
     class Meta:
         db_table = 'majors'
+
+class Class(models.Model):
+    class_id = models.AutoField('班级编号', primary_key=True)
+    class_name = models.CharField('班级名称', max_length=32, null=False)
+    major = models.ForeignKey(Majors, on_delete=models.CASCADE, db_column='major_id')
+    class Meta:
+        db_table = 'class'
 
 class Companies(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
@@ -32,7 +40,7 @@ class Jobs(models.Model):
         db_table = 'jobs'
 
 class Users(models.Model):
-    id = models.AutoField('记录编号', primary_key=True)
+    id = models.AutoField('用户id', primary_key=True)
     userName = models.CharField('用户账号', db_column='user_name', max_length=32, null=False)
     passWord = models.CharField('用户密码', db_column='pass_word', max_length=32, null=False)
     name = models.CharField('用户姓名', max_length=20, null=False)
@@ -51,8 +59,14 @@ class Students(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='user_id')  # 外键关联用户表
     college = models.ForeignKey(Colleges, on_delete=models.CASCADE, db_column='college_id') # 外键关联Colleges表
     major = models.ForeignKey(Majors, on_delete=models.CASCADE, db_column='major_id') # 外键关联Majors表
+    # 新增字段
+    phone_number = models.CharField('联系电话', max_length=11, null=False)
+    name = models.CharField('姓名', max_length=20, null=False)
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id')
+    gender = models.CharField('用户性别', max_length=4,default='女', null=False)
     class Meta:
         db_table = 'students'
+# 新增班级表
 
 class TripartiteInfo(models.Model):
     company_location = models.CharField(max_length=200, verbose_name='公司所在地')
@@ -101,4 +115,30 @@ class SendLogs(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE, db_column='student_id')
     class Meta:
         db_table = 'send_logs'  #
+ scl-test0423
+# studentYC/app/models.py
+from django.db import models
+from .models import Students  # 假设 Students 模型已定义
+
+class TripartiteInfo(models.Model):
+    company_location = models.CharField(max_length=200, verbose_name='公司所在地')
+    company_scale = models.CharField(max_length=100, verbose_name='公司规模')
+    company_name = models.CharField(max_length=200, default='西安腾讯云计算有限公司',verbose_name='公司名称')
+    salary = models.CharField(max_length=50, verbose_name='薪资')
+    position_name = models.CharField(max_length=100, verbose_name='岗位名称')
+    position_category = models.CharField(max_length=100, verbose_name='岗位类别')
+    company_category = models.CharField(max_length=100, verbose_name='公司类别')
+    school = models.CharField(max_length=200, verbose_name='学生所在学校')
+    college = models.CharField(max_length=200, verbose_name='学院')
+    major = models.CharField(max_length=200, verbose_name='专业名称')
+    student_name = models.CharField(max_length=100, verbose_name='学生姓名')
+    student_id_card = models.CharField(max_length=18, verbose_name='学生身份证号')
+    student = models.ForeignKey(Students, on_delete=models.CASCADE, verbose_name='学生')
+    status = models.CharField(max_length=20, default='待审核', verbose_name='审核状态')
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id', verbose_name='班级')
+    class_name = models.CharField(max_length=20, default='计算机214', db_column='class_name', verbose_name='所在班级')
+    gender = models.CharField(max_length=20, default='西安腾讯云计算有限公司',verbose_name='性别')
+    phone_number = models.IntegerField(verbose_name='电话')
+ main
 

@@ -53,16 +53,51 @@
             <form name="addForm" class="fater-form" id="addForm">
                  <div class="fater-form-item">
                     <label>学生姓名</label>
-                    <input type="text" name="student_name" placeholder="请输入学生姓名" required/>
+                    <input type="text" name="student_name" value="{{ student.name }}" readonly />
                 </div>
                 <div class="fater-form-item">
                     <label>学生身份证号</label>
                     <input type="text" name="student_id_card" placeholder="请输入学生身份证号" required/>
                 </div>
+
+                 <div class="fater-form-item">
+                    <label>学生所在学校</label>
+                    <input type="text" name="school" value = "陕西科技大学" readonly/>
+                </div>
+
+                <div class="fater-form-item">
+                    <label>学院</label>
+                    <input type="text" name="college" value="{{ student.college.name }}" readonly />
+                </div>
+
+                <div class="fater-form-item">
+                    <label>专业名称</label>
+                    <input type="text" name="major" value="{{ student.major.name }}" readonly/>
+                </div>
+                <div class="fater-form-item">
+                    <label>班级</label>
+                    <input type="text" name="class_name" value="{{ student.class_id.class_name }}" readonly/>
+                </div>
+                 <div class="fater-form-item">
+                    <label>性别</label>
+                    <input type="text" name="gender" value="{{ student.gender }}" readonly/>
+                </div>
+
+                <div class="fater-form-item">
+                    <label>电话</label>
+                    <input type="text" name="phone_number" value="{{ student.phone_number }}"/>
+                </div>
+
+                 <div class="fater-form-item">
+                    <label>公司名称</label>
+                    <input type="text" name="company_name" placeholder="请输入公司名称" required/>
+                </div>
+
                 <div class="fater-form-item">
                     <label>公司所在地</label>
                     <input type="text" name="company_location" placeholder="请输入公司所在地" required/>
                 </div>
+
                 <div class="fater-form-item">
                     <label>公司规模</label>
                     <select name="company_scale" required>
@@ -71,14 +106,17 @@
                         <option value="小型企业">小型企业</option>
                     </select>
                 </div>
+
                 <div class="fater-form-item">
                     <label>薪资</label>
                     <input type="text" name="salary" placeholder="请输入薪资" required/>
                 </div>
+
                 <div class="fater-form-item">
                     <label>岗位名称</label>
                     <input type="text" name="position_name" placeholder="请输入岗位名称" required/>
                 </div>
+
                 <div class="fater-form-item">
                     <label>岗位类别</label>
                     <select name="position_category" required>
@@ -91,6 +129,7 @@
                         <option value="其他">其他</option>
                     </select>
                 </div>
+
                 <div class="fater-form-item">
                     <label>公司类别</label>
                     <select name="company_category" required>
@@ -101,19 +140,7 @@
                         <option value="其他">其他</option>
                     </select>
                 </div>
-                <div class="fater-form-item">
-                    <label>学生所在学校</label>
-                    <input type="text" name="school" placeholder="请输入学生所在学校" required/>
-                </div>
-                <div class="fater-form-item">
-                    <label>学院</label>
-                    <input type="text" name="college" placeholder="请输入学院" required/>
-                </div>
-                <div class="fater-form-item">
-                    <label>专业名称</label>
-                    <input type="text" name="major" placeholder="请输入专业名称" required/>
-                </div>
-               
+
                 <div class="fater-form-btns">
                     <button type="button" id="addFormBtn" class="fater-btn fater-btn-primary">
                         提交

@@ -9,31 +9,52 @@
     <link rel="stylesheet" type="text/css" href="{% static 'libs/models/models.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/comm.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <div class="login-container">
     <div class="login-body">
-        <div class="login-form">
-            <div class="login-form-title">
-                就业管理系统登陆
-            </div>
-            <div class="login-form-body">
-                <form name="loginForm" action="" class="fater-form">
-                    <div class="fater-form-block">
-                        <input type="text" name="userName" placeholder="请输入教务管理系统账号"/>
-                    </div>
-                    <div class="fater-form-block">
-                        <input type="password" name="passWord" placeholder="请输入教务管理系统密码"/>
-                    </div>
-                    <div class="fater-form-block">
-                        <button type="button" id="loginFormBtn" class="fater-btn fater-btn-primary fater-btn-block">
-                            登录
-                        </button>
-                    </div>
-                </form>
+        <!-- 左侧图片区域 -->
+        <div class="login-left">
+            <img src="{% static 'imgs/login2.jpg' %}" alt="登录背景图">
+        </div>
+        <!-- 右侧登录表单区域 -->
+        <div class="login-right">
+            <div class="login-form">
+                <div class="login-form-title">
+                    <i class="fas fa-user-lock"></i> 就业管理系统登陆
+                </div>
+                <div class="login-form-body">
+                    <form name="loginForm" action="/jobs/login/" class="fater-form">
+                        <div class="fater-form-block">
+                            <input type="text" name="userName" placeholder="请输入教务管理系统账号"/>
+                        </div>
+                        <div class="fater-form-block">
+
+                            <input type="password" name="passWord" placeholder="请输入教务管理系统密码"/>
+{#                            <i class="fas fa-lock"></i>#}
+                        </div>
+                        <!-- 记住密码和忘记密码选项 -->
+                        <div class="login-options">
+                            <input type="checkbox" id="rememberMe">
+                            <label for="rememberMe">记住密码</label>
+                            <a href="#">忘记密码?</a>
+                        </div>
+                        <div class="fater-form-block">
+                            <button type="button" id="loginFormBtn" class="fater-btn fater-btn-primary fater-btn-block">
+                                <i class="fas fa-sign-in-alt"></i> 登录
+                            </button>
+                        </div>
+                        <!-- 注册按钮 -->
+                        <div class="fater-form-block">
+                            <button type="button" class="fater-btn fater-btn-normal fater-btn-block">
+                                <i class="fas fa-user-plus"></i> 注册
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 {% include 'templates/commjs.html' %}
