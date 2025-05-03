@@ -1,0 +1,174 @@
+<!-- pages/edit_tripartite_info.html -->
+<!DOCTYPE html>
+{% load static %}
+<html>
+{% include 'templates/head.html' %}
+<style>
+    /* 设置输入框和选择框的宽度 */
+   .fater-form-item input[type="text"],
+   .fater-form-item select {
+        width: 300px; /* 可根据需要调整宽度 */
+    }
+
+    /* 设置表单项的布局 */
+   .fater-form-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    /* 设置标签的宽度 */
+   .fater-form-item label {
+        width: 150px; /* 可根据需要调整宽度 */
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    /* 设置按钮的样式 */
+   .fater-form-btns {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    /* 设置按钮的间距 */
+   .fater-form-btns button {
+        margin: 0 10px;
+    }
+</style>
+<body>
+<div class="fater-layout-header">
+    {% include 'templates/nav.html' %}
+</div>
+
+<div class="fater-layout-menus">
+    {% include 'templates/menus.html' %}
+</div>
+
+<div class="fater-layout-body">
+    <div class="fater-panel">
+        <div class="fater-pannel-title">
+            修改三方信息
+        </div>
+        <div class="fater-pannel-body">
+            <form action="/jobs/tripartite_info/edit/" method="post" class="fater-form" id="editForm">
+                {% csrf_token %}
+                <div class="fater-form-item">
+                    <label>学生姓名</label>
+                    <input type="text" id="student_name" name="student_name" value="{{ info.student_name }}" readonly />
+                </div>
+                <div class="fater-form-item">
+                    <label>学生身份证号</label>
+                    <input type="text" id="student_id_card" name="student_id_card" value="{{ info.student_id_card }}" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>学校</label>
+                    <input type="text" id="school" name="school" value="{{ info.school }}" readonly/>
+                </div>
+                <div class="fater-form-item">
+                    <label>学院</label>
+                    <input type="text" id="college" name="college" value="{{ info.college }}" readonly />
+                </div>
+                <div class="fater-form-item">
+                    <label>专业</label>
+                    <input type="text" id="major" name="major" value="{{ info.major }}" readonly/>
+                </div>
+                <div class="fater-form-item">
+                    <label>班级</label>
+                    <input type="text" id="class_name" name="class_name" value="{{ info.class_name }}" readonly/>
+                </div>
+                <div class="fater-form-item">
+                    <label>性别</label>
+                    <input type="text" id="gender" name="gender" value="{{ info.gender }}" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>电话</label>
+                    <input type="text" id="phone_number" name="phone_number" value="{{ info.phone_number }}" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>公司名称</label>
+                    <input type="text" id="company_name" name="company_name" value="{{ info.company_name }}" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>公司所在地</label>
+                    <input type="text" id="company_location" name="company_location" value="{{ info.company_location }}" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>公司规模</label>
+                    <select name="company_scale" required>
+                        <option value="大型企业" {% if info.company_scale == '大型企业' %}selected{% endif %}>大型企业</option>
+                        <option value="中型企业" {% if info.company_scale == '中型企业' %}selected{% endif %}>中型企业</option>
+                        <option value="小型企业" {% if info.company_scale == '小型企业' %}selected{% endif %}>小型企业</option>
+                    </select>
+
+                </div>
+                <div class="fater-form-item">
+                    <label>薪资</label>
+                    <input type="text" id="salary" name="salary" value="{{ info.salary }}" required/>
+                </div>
+                <div class="fater-form-item">
+                    <label>岗位名称</label>
+                    <input type="text" id="position_name" name="position_name" value="{{ info.position_name }}" required/>
+                </div>
+                <div class="fater-form-item">
+    <label>岗位类别</label>
+    <select name="position_category" required>
+        <option value="技术类岗位" {% if info.position_category == '技术类岗位' %}selected{% endif %}>技术类岗位</option>
+        <option value="运营类岗位" {% if info.position_category == '运营类岗位' %}selected{% endif %}>运营类岗位</option>
+        <option value="销售类岗位" {% if info.position_category == '技术类岗位' %}selected{% endif %}>销售类岗位</option>
+        <option value="设计类岗位" {% if info.position_category == '销售类岗位' %}selected{% endif %}>设计类岗位</option>
+        <option value="教育类岗位" {% if info.position_category == '教育类岗位' %}selected{% endif %}>教育类岗位</option>
+        <option value="管理类岗位" {% if info.position_category == '管理类岗位' %}selected{% endif %}>管理类岗位</option>
+        <option value="其他" {% if info.position_category == '其他' %}selected{% endif %}>其他 </option>
+    </select>
+</div>
+                <div class="fater-form-item">
+    <label>公司类别</label>
+    <select name="company_category" required>
+        <option value="国企" {% if info.company_category == '国企' %}selected{% endif %}>国企</option>
+        <option value="央企" {% if info.company_category == '央企' %}selected{% endif %}>央企</option>
+        <option value="私企" {% if info.company_category == '私企' %}selected{% endif %}>私企</option>
+        <option value="外企" {% if info.company_category == '外企' %}selected{% endif %}>外企</option>
+        <option value="其他" {% if info.company_category == '其他' %}selected{% endif %}>其他</option>
+    </select>
+</div>
+                <div class="fater-form-btns">
+                    <button type="submit" class="fater-btn fater-btn-primary">
+                        提交修改
+                    </button>
+                    <button type="reset" class="fater-btn fater-btn-normal">
+                        取消
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="fater-layout-foot">
+    {% include 'templates/foot.html' %}
+</div>
+
+{% include 'templates/commjs.html' %}
+<script>
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 阻止表单默认提交行为
+        var form = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.status === 'success') {
+                    window.location.href = '/jobs/tripartite_info/show/'; // 重定向到指定页面
+                }
+            }
+        };
+        var formData = new FormData(form);
+        var encodedData = new URLSearchParams(formData).toString();
+        xhr.send(encodedData);
+    });
+</script>
+</body>
+</html>
