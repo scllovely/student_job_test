@@ -74,10 +74,12 @@
         const locationData = {{ location_data|safe }};
         const typeData = {{ type_data|safe }};
         const collegeData = {{ college_data|safe }};
+        const positionData = {{ position_data|safe }};
 
         const locationTotal = {{ location_total }};
         const typeTotal = {{ type_total }};
         const collegeTotal = {{ college_total }};
+        const positionTotal = {{ position_total }};
 
         option = {
             tooltip: {},
@@ -86,35 +88,44 @@
                     text: '各学院毕业人数',
                     subtext: '总计 ' + collegeTotal,
                     left: '25%',
+                    top: '5%',
+                    textAlign: 'center'
+                },
+                {
+                    text: '岗位类别分布',
+                    subtext: '总计 ' + positionTotal,
+                    left: '75%',
+                    top: '5%',
                     textAlign: 'center'
                 },
                 {
                     text: '公司类型分布',
                     subtext: '总计 ' + typeTotal,
-                    left: '75%',
+                    left: '25%',
+                    top: '55%',
                     textAlign: 'center'
                 },
                 {
                     text: '公司所在地分布',
                     subtext: '总计 ' + locationTotal,
                     left: '75%',
-                    top: '50%',
+                    top: '55%',
                     textAlign: 'center'
                 }
             ],
             grid: [
                 {
-                    top: 50,
-                    width: '50%',
-                    bottom: '45%',
-                    left: 10,
+                    top: '15%',
+                    width: '35%',
+                    bottom: '55%',
+                    left: '10%',
                     containLabel: true
                 },
                 {
-                    top: '55%',
-                    width: '50%',
-                    bottom: 0,
-                    left: 10,
+                    top: '15%',
+                    width: '35%',
+                    bottom: '55%',
+                    left: '55%',
                     containLabel: true
                 }
             ],
@@ -124,15 +135,16 @@
                     max: collegeTotal,
                     splitLine: {
                         show: false
-                    }
+                    },
+                    gridIndex: 0
                 },
                 {
                     type: 'value',
-                    max: typeTotal,
-                    gridIndex: 1,
+                    max: positionTotal,
                     splitLine: {
                         show: false
-                    }
+                    },
+                    gridIndex: 1
                 }
             ],
             yAxis: [
@@ -145,19 +157,20 @@
                     },
                     splitLine: {
                         show: false
-                    }
+                    },
+                    gridIndex: 0
                 },
                 {
-                    gridIndex: 1,
                     type: 'category',
-                    data: typeData.map(item => item.name),
+                    data: positionData.map(item => item.name),
                     axisLabel: {
                         interval: 0,
                         rotate: 30
                     },
                     splitLine: {
                         show: false
-                    }
+                    },
+                    gridIndex: 1
                 }
             ],
             series: [
@@ -169,7 +182,9 @@
                         position: 'right',
                         show: true
                     },
-                    data: collegeData.map(item => item.value)
+                    data: collegeData.map(item => item.value),
+                    xAxisIndex: 0,
+                    yAxisIndex: 0
                 },
                 {
                     type: 'bar',
@@ -178,35 +193,37 @@
                     itemStyle: {
                         color: '#eee'
                     },
-                    data: collegeData.map(item => collegeTotal - item.value)
+                    data: collegeData.map(item => collegeTotal - item.value),
+                    xAxisIndex: 0,
+                    yAxisIndex: 0
                 },
                 {
                     type: 'bar',
                     stack: 'component',
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
                     z: 3,
                     label: {
                         position: 'right',
                         show: true
                     },
-                    data: typeData.map(item => item.value)
+                    data: positionData.map(item => item.value),
+                    xAxisIndex: 1,
+                    yAxisIndex: 1
                 },
                 {
                     type: 'bar',
                     stack: 'component',
                     silent: true,
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
                     itemStyle: {
                         color: '#eee'
                     },
-                    data: typeData.map(item => typeTotal - item.value)
+                    data: positionData.map(item => positionTotal - item.value),
+                    xAxisIndex: 1,
+                    yAxisIndex: 1
                 },
                 {
                     type: 'pie',
                     radius: [0, '30%'],
-                    center: ['75%', '25%'],
+                    center: ['25%', '80%'],
                     data: typeData,
                     label: {
                         show: true,
@@ -216,7 +233,7 @@
                 {
                     type: 'pie',
                     radius: [0, '30%'],
-                    center: ['75%', '75%'],
+                    center: ['75%', '80%'],
                     data: locationData,
                     label: {
                         show: true,

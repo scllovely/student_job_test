@@ -5,12 +5,21 @@ import time
 from django.db import IntegrityError
 import requests
 from django.core.paginator import Paginator
-from django.db.models import Q,Count
+from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views import View
-
+import pandas as pd
+from pyecharts.charts import Bar, Pie
+from pyecharts import options as opts
+from django.http import JsonResponse
+from django.shortcuts import render
+from .models import TripartiteInfo
 from app import models
+
+import pandas as pd
+from django.shortcuts import render
+from .models import TripartiteInfo
 
 
 # 定向到登录页面
@@ -18,17 +27,18 @@ def login(request):
     return HttpResponseRedirect('/jobs/login/')
 
 
-
-
 '''
 基础处理类，其他处理继承这个类
 '''
+
+
 class BaseView(View):
     '''
     检查指定的参数是否存在
     存在返回 True
     不存在返回 False
     '''
+
     def isExit(param):
 
         if (param == None) or (param == ''):
@@ -39,6 +49,7 @@ class BaseView(View):
     '''
     转换分页查询信息
     '''
+
     def parasePage(pageIndex, pageSize, pageTotal, count, data):
 
         return {'pageIndex': pageIndex, 'pageSize': pageSize, 'pageTotal': pageTotal, 'count': count, 'data': data}
@@ -46,12 +57,14 @@ class BaseView(View):
     '''
     转换分页查询信息
     '''
+
     def parasePage(pageIndex, pageSize, pageTotal, count, data):
         return {'pageIndex': pageIndex, 'pageSize': pageSize, 'pageTotal': pageTotal, 'count': count, 'data': data}
 
     '''
     成功响应信息
     '''
+
     def success(msg='处理成功'):
         resl = {'code': 0, 'msg': msg}
         return HttpResponse(json.dumps(resl), content_type='application/json; charset=utf-8')
@@ -59,6 +72,7 @@ class BaseView(View):
     '''
     成功响应信息, 携带数据
     '''
+
     def successData(data, msg='处理成功'):
         resl = {'code': 0, 'msg': msg, 'data': data}
         return HttpResponse(json.dumps(resl), content_type='application/json; charset=utf-8')
@@ -66,6 +80,7 @@ class BaseView(View):
     '''
     系统警告信息
     '''
+
     def warn(msg='操作异常，请重试'):
         resl = {'code': 1, 'msg': msg}
         return HttpResponse(json.dumps(resl), content_type='application/json; charset=utf-8')
@@ -73,6 +88,7 @@ class BaseView(View):
     '''
     系统异常信息
     '''
+
     def error(msg='系统异常'):
         resl = {'code': 2, 'msg': msg}
         return HttpResponse(json.dumps(resl), content_type='application/json; charset=utf-8')
@@ -81,6 +97,8 @@ class BaseView(View):
 '''
 系统请求处理
 '''
+
+
 class SysView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -122,7 +140,7 @@ class SysView(BaseView):
         if request.method == "POST":
             userName = request.POST.get("userName")
             passWord = request.POST.get("passWord")
-            
+
             # 检查用户名是否存在
             user = models.Users.objects.filter(userName=userName).first()
             if not user:
@@ -130,25 +148,25 @@ class SysView(BaseView):
                     "code": 1,
                     "msg": "账号不存在"
                 })
-            
+
             # 检查密码是否正确
             if user.passWord != passWord:
                 return JsonResponse({
                     "code": 1,
                     "msg": "密码不正确"
                 })
-            
+
             # 登录成功，设置session信息
             request.session["user"] = user.id
             request.session["type"] = user.type
             request.session["userName"] = userName
-            
+
             return JsonResponse({
                 "code": 0,
                 "msg": "登录成功",
                 "type": user.type  # 添加用户类型到响应中
             })
-        
+
         return render(request, "login.html")
 
     def getSessionInfo(request):
@@ -175,10 +193,10 @@ class SysView(BaseView):
     def getSysNums(request):
 
         resl = {
-            'companiesTotal' : models.Companies.objects.all().count(),
-            'jobTotal' : models.Jobs.objects.all().count(),
-            'inStuTotal' : models.Students.objects.filter(status=0).count(),
-            'outStuTotal' : models.Students.objects.filter(status=1).count()
+            'companiesTotal': models.Companies.objects.all().count(),
+            'jobTotal': models.Jobs.objects.all().count(),
+            'inStuTotal': models.Students.objects.filter(status=0).count(),
+            'outStuTotal': models.Students.objects.filter(status=1).count()
         }
 
         return BaseView.successData(resl)
@@ -207,9 +225,12 @@ class SysView(BaseView):
 
         return SysView.success()
 
+
 '''
 学院信息管理
 '''
+
+
 class CollegesView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -271,16 +292,16 @@ class CollegesView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
-    def addInfo(self,request):
+    def addInfo(self, request):
 
         models.Colleges.objects.create(name=request.POST.get('name'),
-                                       createTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                                      )
+                                       createTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                                       )
 
         return BaseView.success()
 
@@ -301,9 +322,12 @@ class CollegesView(BaseView):
             models.Colleges.objects.filter(id=request.POST.get('id')).delete()
             return BaseView.success()
 
+
 '''
 专业信息管理
 '''
+
+
 class MajorsView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -364,16 +388,16 @@ class MajorsView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
     def addInfo(self, request):
 
         models.Majors.objects.create(name=request.POST.get('name'),
-                                       createTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                                       )
+                                     createTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                                     )
 
         return BaseView.success()
 
@@ -394,9 +418,12 @@ class MajorsView(BaseView):
             models.Majors.objects.filter(id=request.POST.get('id')).delete()
             return BaseView.success()
 
+
 '''
 企业信息管理
 '''
+
+
 class CompaniesView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -459,8 +486,8 @@ class CompaniesView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
@@ -492,9 +519,12 @@ class CompaniesView(BaseView):
             models.Companies.objects.filter(id=request.POST.get('id')).delete()
             return BaseView.success()
 
+
 '''
 岗位信息管理
 '''
+
+
 class JobsView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -575,10 +605,10 @@ class JobsView(BaseView):
     def addInfo(self, request):
 
         models.Jobs.objects.create(name=request.POST.get('name'),
-                                    duty=request.POST.get('duty'),
-                                    ask=request.POST.get('ask'),
-                                    company=models.Companies.objects.get(id=request.POST.get('companyId'))
-                                    )
+                                   duty=request.POST.get('duty'),
+                                   ask=request.POST.get('ask'),
+                                   company=models.Companies.objects.get(id=request.POST.get('companyId'))
+                                   )
         return BaseView.success()
 
     def updInfo(self, request):
@@ -601,9 +631,12 @@ class JobsView(BaseView):
             models.Jobs.objects.filter(id=request.POST.get('id')).delete()
             return BaseView.success()
 
+
 '''
 用户信息管理
 '''
+
+
 class UsersView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -652,7 +685,7 @@ class UsersView(BaseView):
         name = request.GET.get('name')
         phone = request.GET.get('phone')
 
-        qruery = Q(type = 1);
+        qruery = Q(type=1);
 
         if BaseView.isExit(userName):
             qruery = qruery & Q(userName__contains=userName)
@@ -682,22 +715,22 @@ class UsersView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
     def addInfo(self, request):
 
         models.Users.objects.create(
-                                    userName=request.POST.get('userName'),
-                                    passWord=request.POST.get('passWord'),
-                                    name=request.POST.get('name'),
-                                    gender=request.POST.get('gender'),
-                                    age=request.POST.get('age'),
-                                    phone=request.POST.get('phone'),
-                                    type=request.POST.get('type'),
-                                    )
+            userName=request.POST.get('userName'),
+            passWord=request.POST.get('passWord'),
+            name=request.POST.get('name'),
+            gender=request.POST.get('gender'),
+            age=request.POST.get('age'),
+            phone=request.POST.get('phone'),
+            type=request.POST.get('type'),
+        )
         return BaseView.success()
 
     def updInfo(self, request):
@@ -718,9 +751,12 @@ class UsersView(BaseView):
         models.Users.objects.filter(id=request.POST.get('id')).delete()
         return BaseView.success()
 
+
 '''
 学生信息管理
 '''
+
+
 class StudentsView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -731,7 +767,7 @@ class StudentsView(BaseView):
             majors = models.Majors.objects.all().values()
             classes = models.Class.objects.all().values()
 
-            return render(request, 'students.html', {'colleges': list(colleges), 'majors': list(majors),'classes': list(classes)})
+            return render(request, 'students.html', {'colleges': list(colleges), 'majors': list(majors), 'classes': list(classes)})
         elif module == 'info':
             return self.getInfo(request)
         elif module == 'page':
@@ -801,7 +837,6 @@ class StudentsView(BaseView):
         resl = []
 
         for item in list(paginator.page(pageIndex)):
-
             temp = {
                 'id': item.id,
                 'address': item.address,
@@ -810,7 +845,7 @@ class StudentsView(BaseView):
                 'collegeId': item.college.id,
                 'collegeName': item.college.name,
                 'classId': item.class_id.class_id,
-                'className':item.class_id.class_name,
+                'className': item.class_id.class_name,
                 'majorId': item.major.id,
                 'majorName': item.major.name,
                 'userName': item.name,
@@ -822,8 +857,8 @@ class StudentsView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
@@ -847,7 +882,7 @@ class StudentsView(BaseView):
             college=models.Colleges.objects.get(id=request.POST.get('collegeId')),
             major=models.Majors.objects.get(id=request.POST.get('majorId')),
             user=user,
-            phone_number = request.POST.get('phone'),
+            phone_number=request.POST.get('phone'),
             name=request.POST.get('name'),
             gender=request.POST.get('gender'),
             class_id=models.Class.objects.get(class_id=request.POST.get('classId'))
@@ -882,9 +917,12 @@ class StudentsView(BaseView):
 
         return BaseView.success()
 
+
 '''
 教育经历管理
 '''
+
+
 class EducationLogsView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -904,7 +942,7 @@ class EducationLogsView(BaseView):
         elif module == 'upd':
             return self.updInfo(request)
         elif module == 'del':
-            return self.delInfo( request)
+            return self.delInfo(request)
         else:
             return self.error()
 
@@ -965,8 +1003,8 @@ class EducationLogsView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
@@ -975,10 +1013,10 @@ class EducationLogsView(BaseView):
         user = request.session.get('user')
 
         models.EducationLogs.objects.create(name=request.POST.get('name'),
-                                    startTime=request.POST.get('startTime'),
-                                    endTime=request.POST.get('endTime'),
-                                    student=models.Students.objects.filter(user__id=user).first()
-                                    )
+                                            startTime=request.POST.get('startTime'),
+                                            endTime=request.POST.get('endTime'),
+                                            student=models.Students.objects.filter(user__id=user).first()
+                                            )
         return BaseView.success()
 
     def updInfo(self, request):
@@ -996,9 +1034,12 @@ class EducationLogsView(BaseView):
         models.EducationLogs.objects.filter(id=request.POST.get('id')).delete()
         return BaseView.success()
 
+
 '''
 项目经历管理
 '''
+
+
 class ProjectLogsView(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -1014,7 +1055,7 @@ class ProjectLogsView(BaseView):
 
     def post(self, request, module, *args, **kwargs):
         if module == 'add':
-            return self.addInfo( request)
+            return self.addInfo(request)
         elif module == 'upd':
             return self.updInfo(request)
         elif module == 'del':
@@ -1076,8 +1117,8 @@ class ProjectLogsView(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
@@ -1086,10 +1127,10 @@ class ProjectLogsView(BaseView):
         user = request.session.get('user')
 
         models.ProjectLogs.objects.create(name=request.POST.get('name'),
-                                        duty=request.POST.get('duty'),
-                                        detail=request.POST.get('detail'),
-                                        student=models.Students.objects.filter(user__id=user).first()
-                                        )
+                                          duty=request.POST.get('duty'),
+                                          detail=request.POST.get('detail'),
+                                          student=models.Students.objects.filter(user__id=user).first()
+                                          )
         return BaseView.success()
 
     def updInfo(self, request):
@@ -1107,9 +1148,12 @@ class ProjectLogsView(BaseView):
         models.ProjectLogs.objects.filter(id=request.POST.get('id')).delete()
         return BaseView.success()
 
+
 '''
 投递记录管理
 '''
+
+
 class SendLogs(BaseView):
 
     def get(self, request, module, *args, **kwargs):
@@ -1189,8 +1233,8 @@ class SendLogs(BaseView):
             resl.append(temp)
 
         pageData = BaseView.parasePage(pageIndex, pageSize,
-                                   paginator.page(pageIndex).paginator.num_pages,
-                                   paginator.count, resl)
+                                       paginator.page(pageIndex).paginator.num_pages,
+                                       paginator.count, resl)
 
         return BaseView.successData(pageData)
 
@@ -1214,10 +1258,10 @@ class SendLogs(BaseView):
             else:
 
                 models.SendLogs.objects.create(status=request.POST.get('status'),
-                                                  snedTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-                                                  student=student,
-                                                  job=models.Jobs.objects.filter(id=jobId).first()
-                                                  )
+                                               snedTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+                                               student=student,
+                                               job=models.Jobs.objects.filter(id=jobId).first()
+                                               )
                 return BaseView.success()
         else:
 
@@ -1227,9 +1271,9 @@ class SendLogs(BaseView):
 
         status = request.POST.get('status')
 
-        if  int(status) == 1:
+        if int(status) == 1:
 
-            sendLog =  models.SendLogs.objects.filter(id=request.POST.get('id')).first()
+            sendLog = models.SendLogs.objects.filter(id=request.POST.get('id')).first()
 
             student = models.Students.objects.filter(id=sendLog.student.id).first()
 
@@ -1262,21 +1306,40 @@ class SendLogs(BaseView):
 
         return BaseView.success()
 
+
 '''
 三方信息管理
 '''
+
+
 class TripartiteInfoView(BaseView):
     def get(self, request, module, *args, **kwargs):
         if module == 'show':
             user = request.session.get('user')
             student = models.Students.objects.filter(user__id=user).first()
             tripartite_info = models.TripartiteInfo.objects.filter(student=student)
-            return render(request, 'tripartite_info.html', {'tripartite_info': tripartite_info})
+            # 检查是否有未审核或审核通过的三方信息
+            can_add = not models.TripartiteInfo.objects.filter(student=student, status__in=['待审核', '已通过', '未通过']).exists()
+            # 检查是否有未通过的三方信息
+            has_unapproved = models.TripartiteInfo.objects.filter(student=student, status='未通过').exists()
+            unapproved_info = None
+            if has_unapproved:
+                unapproved_info = models.TripartiteInfo.objects.filter(student=student, status='未通过').first()
+            return render(request, 'tripartite_info.html', {
+                'tripartite_info': tripartite_info,
+                'can_add': can_add,
+                'has_unapproved': has_unapproved,
+                'unapproved_info': unapproved_info
+            })
         elif module == 'add':
             user = request.session.get('user')
             student = models.Students.objects.filter(user__id=user).first()
+            # 检查学生是否已有未审核或者审核通过的三方信息
+            existing_info = models.TripartiteInfo.objects.filter(student=student, status__in=['待审核', '已通过', '未通过']).exists()
+            if existing_info:
+                return JsonResponse({'status': 'error', 'message': '您已有未审核或审核通过的三方信息，不可再次填写'})
             tripartite_info = models.TripartiteInfo.objects.filter(student=student)
-            return render(request, 'add_tripartite_info.html',{'student': student})
+            return render(request, 'add_tripartite_info.html', {'student': student})
         elif module == 'teacher/show':
             colleges = models.Colleges.objects.all()
             majors = models.Majors.objects.all()
@@ -1312,7 +1375,7 @@ class TripartiteInfoView(BaseView):
                     'id': item.id,
                     'student_name': item.student_name,
                     'company_location': item.company_location,
-                    'company_name':item.company_name,
+                    'company_name': item.company_name,
                     'company_scale': item.company_scale,
                     'salary': item.salary,
                     'position_name': item.position_name,
@@ -1322,7 +1385,6 @@ class TripartiteInfoView(BaseView):
                     'college_name': item.student.college.name if item.student and item.student.college else '',
                     'major_name': item.student.major.name if item.student and item.student.major else '',
                     'status': item.status,
-
                 })
 
             data = {
@@ -1333,6 +1395,8 @@ class TripartiteInfoView(BaseView):
         elif module == 'audit':
             id = request.POST.get('id')
             status = request.POST.get('status')
+            user = request.session.get('user')
+            student = models.Students.objects.filter(user__id=user).first()
             try:
                 tripartite_info = models.TripartiteInfo.objects.get(id=id)
                 tripartite_info.status = status
@@ -1340,6 +1404,11 @@ class TripartiteInfoView(BaseView):
                 return JsonResponse({'code': 0, 'msg': '审核成功'})
             except models.TripartiteInfo.DoesNotExist:
                 return JsonResponse({'code': 1, 'msg': '三方信息不存在'})
+        elif module == 'edit':
+            user = request.session.get('user')
+            student = models.Students.objects.filter(user__id=user).first()
+            unapproved_info = models.TripartiteInfo.objects.filter(student=student, status='未通过').first()
+            return render(request, 'edit_tripartite_info.html', {'info': unapproved_info, 'student': student})
         else:
             return self.error()
 
@@ -1347,6 +1416,10 @@ class TripartiteInfoView(BaseView):
         if module == 'add':
             user = request.session.get('user')
             student = models.Students.objects.filter(user__id=user).first()
+            # 检查学生是否已有未审核或者审核通过的三方信息
+            existing_info = models.TripartiteInfo.objects.filter(student=student, status__in=['待审核', '已通过']).exists()
+            if existing_info:
+                return JsonResponse({'status': 'error', 'message': '您已有未审核或审核通过的三方信息，不可再次填写'})
             models.TripartiteInfo.objects.create(
                 company_location=request.POST.get('company_location'),
                 company_scale=request.POST.get('company_scale'),
@@ -1358,75 +1431,96 @@ class TripartiteInfoView(BaseView):
                 college=request.POST.get('college'),
                 major=request.POST.get('major'),
                 class_name=request.POST.get('class_name'),
-                gender =request.POST.get('gender'),
+                gender=request.POST.get('gender'),
                 phone_number=request.POST.get('phone_number'),
                 student_name=request.POST.get('student_name'),
                 student_id_card=request.POST.get('student_id_card'),
                 student=student
-
             )
             return JsonResponse({'status': 'success', 'message': '三方信息提交成功，等待审核'})
         elif module == 'audit':
             return self.get(request, module, *args, **kwargs)
+        elif module == 'edit':
+            user = request.session.get('user')
+            student = models.Students.objects.filter(user__id=user).first()
+            unapproved_info = models.TripartiteInfo.objects.filter(student=student, status='未通过').first()
+            unapproved_info.company_location = request.POST.get('company_location')
+            unapproved_info.company_scale = request.POST.get('company_scale')
+            unapproved_info.salary = request.POST.get('salary')
+            unapproved_info.position_name = request.POST.get('position_name')
+            unapproved_info.position_category = request.POST.get('position_category')
+            unapproved_info.company_category = request.POST.get('company_category')
+            unapproved_info.school = request.POST.get('school')
+            unapproved_info.college = request.POST.get('college')
+            unapproved_info.major = request.POST.get('major')
+            unapproved_info.class_name = request.POST.get('class_name')
+            unapproved_info.gender = request.POST.get('gender')
+            unapproved_info.phone_number = request.POST.get('phone_number')
+            unapproved_info.student_name = request.POST.get('student_name')
+            unapproved_info.student_id_card = request.POST.get('student_id_card')
+            unapproved_info.company_name = request.POST.get('company_name')
+            unapproved_info.status = '待审核'
+            unapproved_info.save()
+            return JsonResponse({'status': 'success', 'message': '三方信息修改成功，等待审核'})
         else:
             return self.error()
+
 
 '''
 可视化
 '''
 
-import pandas as pd
-from pyecharts.charts import Bar, Pie
-from pyecharts import options as opts
-from django.http import JsonResponse
-from django.shortcuts import render
-from .models import TripartiteInfo
-from .views import BaseView
-
 
 class GraduateEmploymentAnalysisView(BaseView):
-            def get(self, request, module, *args, **kwargs):
-                if module == 'show':
-                    # 检查用户是否为管理员
-                    if request.session.get('type') != 0:
-                        return self.error()
+    def get(self, request, module, *args, **kwargs):
+        if module == 'show':
+            # 检查用户是否为管理员
+            if request.session.get('type') != 0:
+                return self.error()
 
-                    # 获取三方信息数据
-                    tripartite_info = TripartiteInfo.objects.all().values()
-                    df = pd.DataFrame(list(tripartite_info))
-                    # 新增：获取每个学院的学生人数
-                    college_stats = models.Colleges.objects.all().values()
-                    df2 = pd.DataFrame(list(college_stats))
+            # 获取三方信息数据
+            tripartite_info = TripartiteInfo.objects.all().values()
+            df = pd.DataFrame(list(tripartite_info))
 
+            # 获取每个学院的学生人数
+            college_stats = models.TripartiteInfo.objects.all().values()
+            df2 = pd.DataFrame(list(college_stats))
 
-                    # 数据统计和分析
-                    location_count = df['company_location'].value_counts()
-                    type_count = df['company_category'].value_counts()
-                    college_count = df2['name'].value_counts()
+            # 获取岗位人数
+            position_stats = models.TripartiteInfo.objects.all().values()
+            df3 = pd.DataFrame(list(position_stats))
 
-                    # 转换为适合 ECharts 使用的格式
-                    location_data = [{"name": key, "value": value} for key, value in location_count.items()]
-                    type_data = [{"name": key, "value": value} for key, value in type_count.items()]
-                    college_data = [{"name": key, "value": value} for key, value in college_count.items()]
+            # 数据统计和分析
+            location_count = df['company_location'].value_counts()
+            type_count = df['company_category'].value_counts()
+            college_count = df2['college'].value_counts()
+            position_count = df3['position_category'].value_counts()
 
-                    # 计算总计数量
-                    location_total = sum(location_count.values)
-                    type_total = sum(type_count.values)
-                    college_total = sum(college_count.values)
+            # 转换为适合 ECharts 使用的格式
+            location_data = [{"name": key, "value": value} for key, value in location_count.items()]
+            type_data = [{"name": key, "value": value} for key, value in type_count.items()]
+            college_data = [{"name": key, "value": value} for key, value in college_count.items()]
+            position_data = [{"name": key, "value": value} for key, value in position_count.items()]
 
+            # 计算总计数量
+            location_total = sum(location_count.values)
+            type_total = sum(type_count.values)
+            college_total = sum(college_count.values)
+            position_total = sum(position_count.values)
 
-                    context = {
-                        'location_data': location_data,
-                        'type_data': type_data,
-                        'location_total': location_total,
-                        'type_total': type_total,
-                        #
+            context = {
+                'location_data': location_data,
+                'type_data': type_data,
+                'location_total': location_total,
+                'type_total': type_total,
 
-                        'college_data': college_data,
-                        'college_total': college_total
-                    }
-                    print(location_total, type_total, context)
-                    return render(request, 'analysistest.html', context)
+                'college_data': college_data,
+                'college_total': college_total,
+                'position_data': position_data,
+                'position_total': position_total,
+            }
+            print(location_total, type_total, context)
+            return render(request, 'analysistest.html', context)
 
-                else:
-                    return self.error()
+        else:
+            return self.error()

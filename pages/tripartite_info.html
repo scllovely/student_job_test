@@ -105,7 +105,12 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% if can_add %}
             <button type="button" onclick="window.location.href='/jobs/tripartite_info/add/'">填写三方信息</button>
+            {% endif %}
+            {% if has_unapproved %}
+            <button type="button" onclick="window.location.href='/jobs/tripartite_info/edit/'">修改三方信息</button>
+            {% endif %}
         </div>
     </div>
 </div>
