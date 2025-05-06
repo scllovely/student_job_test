@@ -115,7 +115,7 @@ class SendLogs(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE, db_column='student_id')
     class Meta:
         db_table = 'send_logs'  #
- scl-test0423
+
 # studentYC/app/models.py
 from django.db import models
 from .models import Students  # 假设 Students 模型已定义
@@ -140,5 +140,6 @@ class TripartiteInfo(models.Model):
     class_name = models.CharField(max_length=20, default='计算机214', db_column='class_name', verbose_name='所在班级')
     gender = models.CharField(max_length=20, default='西安腾讯云计算有限公司',verbose_name='性别')
     phone_number = models.IntegerField(verbose_name='电话')
- main
+    class Meta:
+        db_table = 'tripartite_info'
 

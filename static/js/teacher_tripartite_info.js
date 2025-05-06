@@ -29,7 +29,6 @@ $(document).ready(function() {
                         '<th>公司名称</th>' +
                         '<th>公司所在地</th>' +
                         '<th>公司规模</th>' +
-                        '<th>薪资</th>' +
                         '<th>岗位名称</th>' +
                         '<th>岗位类别</th>' +
                         '<th>公司类别</th>' +
@@ -46,7 +45,6 @@ $(document).ready(function() {
                         html += '<td>' + item.company_name + '</td>';
                         html += '<td>' + item.company_location + '</td>';
                         html += '<td>' + item.company_scale + '</td>';
-                        html += '<td>' + item.salary + '</td>';
                         html += '<td>' + item.position_name + '</td>';
                         html += '<td>' + item.position_category + '</td>';
                         html += '<td>' + item.company_category + '</td>';

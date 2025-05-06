@@ -2,6 +2,157 @@
 {% load static %}
 <html>
 {% include 'templates/head.html' %}
+<head>
+    <style>
+        /* 现代化数字面板样式 */
+        .fater-nums {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .fater-num-panel {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(to bottom right, #f0f6ff, #e0e9ff); /* 添加渐变背景色 */
+            border-radius: 20px; /* 增加圆角半径 */
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* 增加阴影强度 */
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none; /* 移除左侧边框 */
+        }
+
+        .fater-num-panel:hover {
+            transform: translateY(-10px); /* 增加悬停时的上移距离 */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* 增加悬停时的阴影强度 */
+        }
+
+        .fater-num-title {
+            font-size: 18px; /* 增大标题字体大小 */
+            color: #4361ee; /* 更改标题颜色 */
+            margin-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fater-num-toatal {
+            font-size: 50px; /* 增大总数字体大小 */
+            font-weight: 800;
+            color: #212529;
+            margin: 10px 0;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .fater-num-unit {
+            font-size: 18px; /* 增大单位字体大小 */
+            color: #6c757d;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 为每个数字面板添加不同的装饰色 */
+        .fater-num-panel:nth-child(1) {
+            background: linear-gradient(to bottom right, #e5f6ff, #d1eaff);
+        }
+
+        .fater-num-panel:nth-child(2) {
+            background: linear-gradient(to bottom right, #e8f5ff, #cfe7ff);
+        }
+
+        .fater-num-panel:nth-child(3) {
+            background: linear-gradient(to bottom right, #eaf7ff, #d7ebff);
+        }
+
+        .fater-num-panel:nth-child(4) {
+            background: linear-gradient(to bottom right, #edf8ff, #dfefff);
+        }
+
+        /* 现代化面板样式 */
+        .fater-panel {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            background: white;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .fater-panel:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .fater-pannel-title {
+            background: linear-gradient(to right, #4361ee, #3f37c9);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            border: none;
+        }
+
+        .fater-pannel-body {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .fater-num-panel {
+                min-width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .fater-num-panel {
+                min-width: 100%;
+            }
+
+            .fater-num-toatal {
+                font-size: 40px;
+            }
+        }
+
+        /* 添加动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fater-num-panel {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .fater-num-panel:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .fater-num-panel:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .fater-num-panel:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .fater-num-panel:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
 <body>
 <div class="fater-layout-header">
     {% include 'templates/nav.html' %}
@@ -12,40 +163,41 @@
 </div>
 
 <div class="fater-layout-body">
-
+    <!-- 数字面板区域 -->
     <div class="fater-nums">
         <div class="fater-num-panel">
             <div class="fater-num-title">优质企业</div>
-            <div id="cTotal" class="fater-num-toatal"></div>
+            <div id="cTotal" class="fater-num-toatal">0</div>
             <div class="fater-num-unit">家</div>
         </div>
         <div class="fater-num-panel">
             <div class="fater-num-title">优质岗位</div>
-            <div id="jTotal" class="fater-num-toatal"></div>
+            <div id="jTotal" class="fater-num-toatal">0</div>
             <div class="fater-num-unit">个</div>
         </div>
         <div class="fater-num-panel">
             <div class="fater-num-title">就业人数</div>
-            <div id="isTotal" class="fater-num-toatal"></div>
+            <div id="isTotal" class="fater-num-toatal">0</div>
             <div class="fater-num-unit">位</div>
         </div>
-        <div class="fater-num-panel" style="margin-right: 0px;">
+        <div class="fater-num-panel">
             <div class="fater-num-title">待业人数</div>
-            <div id="osTotal" class="fater-num-toatal"></div>
+            <div id="osTotal" class="fater-num-toatal">0</div>
             <div class="fater-num-unit">位</div>
         </div>
     </div>
 
+    <!-- 课表信息面板 -->
     <div class="fater-panel">
         <div class="fater-pannel-title">
-            课表信息
+            <i class="fas fa-calendar-alt"></i> 课表信息
         </div>
         <div class="fater-pannel-body">
-            <table class="fater-table">
-
-
-
-            </table>
+            <div class="table-responsive">
+                <table class="fater-table">
+                    <!-- 表格内容将通过JS动态加载 -->
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -56,25 +208,25 @@
 
 {% include 'templates/commjs.html' %}
 <script type="text/javascript">
-$(function(){
+    $(function () {
 
-    $.ajax({
-        url: "/jobs/sysNum/",
-        type: "GET",
-        async: false,
-        success: function(res){
-            if(res.code == 0){
+        $.ajax({
+            url: "/jobs/sysNum/",
+            type: "GET",
+            async: false,
+            success: function (res) {
+                if (res.code == 0) {
 
-                $('#cTotal').text(res.data.companiesTotal);
-                $('#jTotal').text(res.data.jobTotal);
-                $('#isTotal').text(res.data.inStuTotal);
-                $('#osTotal').text(res.data.outStuTotal);
-            }else{
-                $.msg("error", res.msg);
+                    $('#cTotal').text(res.data.companiesTotal);
+                    $('#jTotal').text(res.data.jobTotal);
+                    $('#isTotal').text(res.data.inStuTotal);
+                    $('#osTotal').text(res.data.outStuTotal);
+                } else {
+                    $.msg("error", res.msg);
+                }
             }
-        }
+        });
     });
-});
 </script>
 </body>
 </html>

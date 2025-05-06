@@ -10,6 +10,8 @@
 	right: 0;
 	background-color: #FFFFFF;
 	z-index: 1001;
+	border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 .fater-model-win-head{
 	position: relative;

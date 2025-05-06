@@ -1,0 +1,104 @@
+{% extends 'templates/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="fater-layout-content">
+    <div class="fater-layout-content-header">
+        <div class="fater-layout-content-header-title">
+            <i class="fa fa-user"></i>
+            <span>添加三方信息</span>
+        </div>
+    </div>
+    <div class="fater-layout-content-body">
+        <form class="fater-form" id="addForm">
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">学生姓名</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="student_name" value="{{ student.name }}" readonly />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">学院</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="college" value="{{ student.college.name }}" readonly />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">专业名称</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="major" value="{{ student.major.name }}" readonly />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">所在班级</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="class_name" value="{{ student.class_id.class_name }}" readonly />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">身份证号</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="student_id_card" value="{{ student.id_card }}" readonly />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">公司所在地</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="company_location" placeholder="请输入公司所在地" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">公司名称</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="company_name" placeholder="请输入公司名称" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">公司规模</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="company_scale" placeholder="请输入公司规模" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">薪资</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="salary" placeholder="请输入薪资" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">岗位名称</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="position_name" placeholder="请输入岗位名称" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">岗位类别</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="position_category" placeholder="请输入岗位类别" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">公司类别</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="company_category" placeholder="请输入公司类别" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-label">学校</div>
+                <div class="fater-form-item-content">
+                    <input type="text" name="school" placeholder="请输入学校" />
+                </div>
+            </div>
+            <div class="fater-form-item">
+                <div class="fater-form-item-content">
+                    <button type="button" class="fater-btn fater-btn-primary" id="addFormBtn">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'js/add_tripartite_info.js' %}"></script>
+{% endblock %} 

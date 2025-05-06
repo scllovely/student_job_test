@@ -13,37 +13,36 @@
 
 <div class="fater-layout-body">
     <div class="fater-panel">
-        <div class="fater-pannel-title">
-            数据查询
-        </div>
-        <div class="fater-pannel-body">
-            <div class="fater-form-inline">
-                <input type="text" name="para1" placeholder="请输入管理员账号……"/>
-            </div>
-            <div class="fater-form-inline">
-                <input type="text" name="para2" placeholder="请输入管理员姓名……"/>
-            </div>
-            <div class="fater-form-inline">
-                <input type="text" name="para3" placeholder="请输入联系电话……"/>
-            </div>
-            <div class="fater-form-inline">
-                <button type="button" class="fater-btn fater-btn-form-qry">
-                    <span class="fa fa-search"></span>
-                </button>
-            </div>
-            <div class="clear"></div>
-        </div>
-    </div>
 
-    <div class="fater-panel">
-        <div class="fater-pannel-title">
-            <button event="add" type="button" class="fater-btn fater-btn-primary">
-                <span style="color: #FFFFFF;" class="fa fa-plus"></span>
-            </button>
-        </div>
         <div class="fater-pannel-body">
-            <div id="tableShow"></div>
+            <div class="dashboard-title">
+                管理员信息
+            </div>
+            <div class="fater-form-group">
+                <div class="fater-form-inline">
+                    <input type="text" name="para1" placeholder="请输入管理员账号……"/>
+                </div>
+                <div class="fater-form-inline">
+                    <input type="text" name="para2" placeholder="请输入管理员姓名……"/>
+                </div>
+                <div class="fater-form-inline">
+                    <input type="text" name="para3" placeholder="请输入联系电话……"/>
+                </div>
+
+                    <button type="button" class="fater-btn fater-btn-form-qry fater-btn-search">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button event="add" type="button" class="fater-btn fater-btn-primary fater-btn-add">
+                        <span style="color: #FFFFFF;" class="fa fa-plus"></span>
+                    </button>
+
+
+                <div class="clear"></div>
+            </div>
         </div>
+
+    <div class="fater-pannel-body">
+        <div id="tableShow"></div>
     </div>
 </div>
 

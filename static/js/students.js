@@ -61,7 +61,7 @@ $(function (){
         cols: [
 			{
 				field: "id",
-				title: "学生学号",
+				title: "学号",
 				align: "center",
 			},
 			// {
@@ -71,22 +71,22 @@ $(function (){
 			// },
 			{
 				field: "name",
-				title: "学生姓名",
+				title: "姓名",
 				align: "center",
 			},
 			{
 				field: "gender",
-				title: "学生性别",
+				title: "性别",
 				align: "center",
 			},
 			{
 				field: "age",
-				title: "学生年龄",
+				title: "年龄",
 				align: "center",
 			},
 			{
 				field: "phone",
-				title: "联系电话",
+				title: "电话",
 				align: "center",
 			},
 			{
@@ -106,12 +106,12 @@ $(function (){
 			},
 			{
 				field: "majorName",
-				title: "所学专业",
+				title: "专业",
 				align: "center",
 			},
             {
 				field: "className",
-				title: "所在班级",
+				title: "班级",
 				align: "center",
 			},
 			{
