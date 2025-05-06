@@ -10,6 +10,50 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/comm.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 优化记住密码复选框样式 */
+       .fater-form-block input[type="checkbox"] {
+            /* 缩小复选框大小 */
+            width: 6px;
+            height: 16px;
+            /* 垂直居中对齐 */
+            vertical-align: middle;
+            /* 去除默认样式 */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* 添加边框和背景色 */
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            /* 添加过渡效果 */
+            transition: all 0.3s ease;
+        }
+
+       .fater-form-block input[type="checkbox"]:checked {
+            /* 选中时的背景色 */
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+       .fater-form-block input[type="checkbox"]:checked::before {
+            /* 选中时的图标 */
+            content: '\2713';
+            display: block;
+            text-align: center;
+            color: #fff;
+            font-size: 12px;
+            line-height: 16px;
+        }
+
+       .fater-form-block label {
+            /* 调整标签的垂直对齐方式和边距 */
+            vertical-align: middle;
+            margin-left: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 <div class="login-container">
@@ -30,15 +74,13 @@
                             <input type="text" name="userName" placeholder="请输入教务管理系统账号"/>
                         </div>
                         <div class="fater-form-block">
-
                             <input type="password" name="passWord" placeholder="请输入教务管理系统密码"/>
-{#                            <i class="fas fa-lock"></i>#}
+                            {#                            <i class="fas fa-lock"></i>#}
                         </div>
-                        <!-- 记住密码和忘记密码选项 -->
+                        <!-- 记住密码复选框 -->
                         <div class="login-options">
-                            <input type="checkbox" id="rememberMe">
-                            <label for="rememberMe">记住密码</label>
-                            <a href="#">忘记密码?</a>
+                            <input type="checkbox" id="rememberPassword" name="rememberPassword">
+                            <label for="rememberPassword">记住密码</label>
                         </div>
                         <div class="fater-form-block">
                             <button type="button" id="loginFormBtn" class="fater-btn fater-btn-primary fater-btn-block">
