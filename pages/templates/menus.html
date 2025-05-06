@@ -11,9 +11,17 @@
 {#    </div>#}
         <div class="fater-menu-item">
         <a href="/jobs/graduate_employment_analysis/show/">
-            <span class="fa fa-chart-bar"></span> 毕业生去向数据分析
+            <span class="fa fa-newspaper-o"></span> 毕业生去向数据可视化
         </a>
     </div>
+    
+    <!-- 新增三方信息管理（老师） -->
+    <div class="fater-menu-item">
+        <a href="/jobs/tripartite_info/teacher/show/">
+            <span class="fa fa-file-text-o"></span> 三方信息管理
+        </a>
+    </div>
+    
     <div class="fater-menu-item">
         <a href="/jobs/colleges/show/">
             <span class="fa fa-building"></span> 学院信息管理
@@ -59,12 +67,7 @@
             <span class="fa fa-paper-plane"></span> 学生投递记录
         </a>
     </div>
-<!-- 新增三方信息管理（老师） -->
-    <div class="fater-menu-item">
-        <a href="/jobs/tripartite_info/teacher/show/">
-            <span class="fa fa-file-text-o"></span> 三方信息管理
-        </a>
-    </div>
+
 
 </div>
 {% elif  request.session.type == 1 %}
@@ -112,6 +115,12 @@
             <span class="fa fa-diamond"></span> 岗位信息浏览
         </a>
     </div>
+    <!-- 新增三方信息管理（学生） -->
+    <div class="fater-menu-item">
+        <a href="/jobs/tripartite_info/show/">
+            <span class="fa fa-file-text-o"></span> 三方信息管理
+        </a>
+    </div>
     <div class="fater-menu-item">
         <a href="/jobs/educationLogs/show/">
             <span class="fa fa-mortar-board"></span> 教育经历设置
@@ -127,11 +136,6 @@
             <span class="fa fa-paper-plane"></span> 投递记录查看
         </a>
     </div>
-<!-- 新增三方信息管理（学生） -->
-    <div class="fater-menu-item">
-        <a href="/jobs/tripartite_info/show/">
-            <span class="fa fa-file-text-o"></span> 三方信息管理
-        </a>
-    </div>
+
 </div>
 {% endif %}

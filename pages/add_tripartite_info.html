@@ -4,35 +4,219 @@
 <html>
 {% include 'templates/head.html' %}
 <style>
-    /* 设置输入框和选择框的宽度 */
-   .fater-form-item input[type="text"],
-   .fater-form-item select {
-        width: 300px; /* 可根据需要调整宽度 */
+    /* 全局样式 */
+    :root {
+        --primary-color: #4361ee;
+        --primary-hover: #3a56d4;
+        --secondary-color: #6c757d;
+        --light-gray: #f8f9fa;
+        --border-color: #e9ecef;
+        --text-color: #495057;
+        --readonly-bg: #f5f5f5;
+        --module-bg: #ffffff;
+        --module-border: #dee2e6;
     }
 
-    /* 设置表单项的布局 */
-   .fater-form-item {
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        background-color: #f5f7fa;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    /* 主容器样式 */
+    .fater-layout-body {
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* 面板样式 */
+    .fater-panel {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    /* 标题样式 */
+    .fater-pannel-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2b2d42;
+        padding: 1rem 1.5rem;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid var(--border-color);
+        text-align: left;
+    }
+
+    /* 表单主体 */
+    .fater-pannel-body {
+        padding: 1.5rem;
+    }
+
+    /* 表单布局 */
+    .fater-form {
         display: flex;
-        align-items: center;
-        margin-bottom: 15px;
+        flex-direction: column;
+        gap: 0;
     }
 
-    /* 设置标签的宽度 */
-   .fater-form-item label {
-        width: 150px; /* 可根据需要调整宽度 */
-        text-align: right;
-        margin-right: 10px;
+    /* 模块样式 */
+    .fater-form-module {
+        width: 95%;
+        border: 1px solid var(--module-border);
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        background-color: var(--module-bg);
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
     }
 
-    /* 设置按钮的样式 */
-   .fater-form-btns {
-        margin-top: 20px;
-        text-align: center;
+    .fater-form-module h3 {
+        margin: 0 0 1.2rem 0;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid var(--border-color);
+        color: #343a40;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: left;
     }
 
-    /* 设置按钮的间距 */
-   .fater-form-btns button {
-        margin: 0 10px;
+    /* 三列网格布局 */
+    .fater-form-module-content {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    /* 表单项样式 */
+    .fater-form-item {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    /* 设置标签的样式 */
+    .fater-form-item label {
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+        color: #495057;
+        font-size: 1.0rem;
+        text-align: left;
+    }
+
+    /* 输入框和选择框样式 */
+    .fater-form-item input[type="text"],
+    .fater-form-item select {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 0.9rem;
+        transition: border-color 0.2s;
+        text-align: left;
+    }
+
+    .fater-form-item input[type="text"]:focus,
+    .fater-form-item select:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+    }
+
+    /* 改进只读字段的视觉区分 */
+    .fater-form-item input[readonly] {
+        background-color: var(--readonly-bg);
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    /* 占位符样式 */
+    .fater-form-item input::placeholder {
+        color: #adb5bd;
+        opacity: 1;
+    }
+
+    /* 选择框样式 */
+    .fater-form-item select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.6rem center;
+        background-size: 0.8rem;
+    }
+
+    /* 按钮区域 */
+    .fater-form-btns {
+        display: flex;
+        justify-content: flex-start;
+        gap: 1rem;
+        /* 修改此处，减少上边距 */
+        margin-top: 0.2rem;
+        /* 修改此处，减少上内边距 */
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* 按钮样式 */
+    .fater-btn {
+        padding: 1.0rem 1.2rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+    }
+
+    .fater-btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        border: 1px solid var(--border-color); /* 修正拼写错误 order -> border */
+    }
+
+    .fater-btn-primary:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .fater-btn-normal {
+        background-color: white;
+        color: var(--secondary-color);
+        border: 1px solid var(--border-color);
+    }
+
+    .fater-btn-normal:hover {
+        background-color: #f8f9fa;
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 992px) {
+        .fater-form-module-content {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .fater-layout-body {
+            padding: 1rem;
+        }
+
+        .fater-form-module-content {
+            grid-template-columns: 1fr;
+        }
+
+        .fater-form-btns {
+            flex-direction: column;
+        }
+
+        .fater-btn {
+            width: 100%;
+        }
     }
 </style>
 <body>
@@ -51,94 +235,99 @@
         </div>
         <div class="fater-pannel-body">
             <form name="addForm" class="fater-form" id="addForm">
-                 <div class="fater-form-item">
-                    <label>学生姓名</label>
-                    <input type="text" name="student_name" value="{{ student.name }}" readonly />
-                </div>
-                <div class="fater-form-item">
-                    <label>学生身份证号</label>
-                    <input type="text" name="student_id_card" placeholder="请输入学生身份证号" required/>
-                </div>
-
-                 <div class="fater-form-item">
-                    <label>学生所在学校</label>
-                    <input type="text" name="school" value = "陕西科技大学" readonly/>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>学院</label>
-                    <input type="text" name="college" value="{{ student.college.name }}" readonly />
-                </div>
-
-                <div class="fater-form-item">
-                    <label>专业名称</label>
-                    <input type="text" name="major" value="{{ student.major.name }}" readonly/>
-                </div>
-                <div class="fater-form-item">
-                    <label>班级</label>
-                    <input type="text" name="class_name" value="{{ student.class_id.class_name }}" readonly/>
-                </div>
-                 <div class="fater-form-item">
-                    <label>性别</label>
-                    <input type="text" name="gender" value="{{ student.gender }}" readonly/>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>电话</label>
-                    <input type="text" name="phone_number" value="{{ student.phone_number }}"/>
-                </div>
-
-                 <div class="fater-form-item">
-                    <label>公司名称</label>
-                    <input type="text" name="company_name" placeholder="请输入公司名称" required/>
+                <!-- 个人信息模块 -->
+                <div class="fater-form-module">
+                    <h3>个人信息</h3>
+                    <div class="fater-form-module-content">
+                        <div class="fater-form-item">
+                            <label>学生姓名</label>
+                            <input type="text" name="student_name" value="{{ student.name }}" readonly />
+                        </div>
+                        <div class="fater-form-item">
+                            <label>学生所在学校</label>
+                            <input type="text" name="school" value="陕西科技大学" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>学院</label>
+                            <input type="text" name="college" value="{{ student.college.name }}" readonly />
+                        </div>
+                        <div class="fater-form-item">
+                            <label>专业名称</label>
+                            <input type="text" name="major" value="{{ student.major.name }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>班级</label>
+                            <input type="text" name="class_name" value="{{ student.class_id.class_name }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>性别</label>
+                            <input type="text" name="gender" value="{{ student.gender }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>学生身份证号</label>
+                            <input type="text" name="student_id_card" placeholder="请输入学生身份证号" required/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>电话</label>
+                            <input type="text" name="phone_number" value="{{ student.phone_number }}"/>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="fater-form-item">
-                    <label>公司所在地</label>
-                    <input type="text" name="company_location" placeholder="请输入公司所在地" required/>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>公司规模</label>
-                    <select name="company_scale" required>
-                        <option value="大型企业">大型企业</option>
-                        <option value="中型企业">中型企业</option>
-                        <option value="小型企业">小型企业</option>
-                    </select>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>薪资</label>
-                    <input type="text" name="salary" placeholder="请输入薪资" required/>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>岗位名称</label>
-                    <input type="text" name="position_name" placeholder="请输入岗位名称" required/>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>岗位类别</label>
-                    <select name="position_category" required>
-                        <option value="技术类岗位">技术类岗位</option>
-                        <option value="运营类岗位">运营类岗位</option>
-                        <option value="销售类岗位">销售类岗位</option>
-                        <option value="设计类岗位">设计类岗位</option>
-                        <option value="教育类岗位">教育类岗位</option>
-                        <option value="管理类岗位">管理类岗位</option>
-                        <option value="其他">其他</option>
-                    </select>
-                </div>
-
-                <div class="fater-form-item">
-                    <label>公司类别</label>
-                    <select name="company_category" required>
-                        <option value="国企">国企</option>
-                        <option value="央企">央企</option>
-                        <option value="私企">私企</option>
-                        <option value="外企">外企</option>
-                        <option value="其他">其他</option>
-                    </select>
+                <!-- 公司信息模块 -->
+                <div class="fater-form-module">
+                    <h3>公司信息</h3>
+                    <div class="fater-form-module-content">
+                        <div class="fater-form-item">
+                            <label>公司名称</label>
+                            <input type="text" name="company_name" placeholder="请输入公司名称" required/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>公司所在地</label>
+                            <input type="text" name="company_location" placeholder="请输入公司所在地" required/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>公司类别</label>
+                            <select name="company_category" required>
+                                <option value="" disabled selected hidden>请选择公司类别</option>
+                                <option value="国企">国企</option>
+                                <option value="央企">央企</option>
+                                <option value="私企">私企</option>
+                                <option value="外企">外企</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>公司规模</label>
+                            <select name="company_scale" required>
+                                <option value="" disabled selected hidden>请选择公司规模</option>
+                                <option value="大型企业">大型企业</option>
+                                <option value="中型企业">中型企业</option>
+                                <option value="小型企业">小型企业</option>
+                            </select>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>岗位名称</label>
+                            <input type="text" name="position_name" placeholder="请输入岗位名称" required/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>薪资</label>
+                            <input type="text" name="salary" placeholder="请输入薪资" required/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>岗位类别</label>
+                            <select name="position_category" required>
+                                <option value="" disabled selected hidden>请选择岗位类别</option>
+                                <option value="技术类岗位">技术类岗位</option>
+                                <option value="运营类岗位">运营类岗位</option>
+                                <option value="销售类岗位">销售类岗位</option>
+                                <option value="设计类岗位">设计类岗位</option>
+                                <option value="教育类岗位">教育类岗位</option>
+                                <option value="管理类岗位">管理类岗位</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="fater-form-btns">
@@ -174,8 +363,8 @@
                 'X-CSRFToken': '{{ csrf_token }}'
             }
         })
-       .then(response => response.json())
-       .then(data => {
+        .then(response => response.json())
+        .then(data => {
             if (data.status === 'success') {
                 alert(data.message);
                 window.location.href = '/jobs/tripartite_info/show/';

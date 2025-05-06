@@ -1,0 +1,44 @@
+/* 设置表格自适应 */
+#tableShow table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#tableShow th,
+#tableShow td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 调整筛选框和按钮的布局 */
+.fater-form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.fater-form-inline {
+    flex: 1 1 auto;
+    min-width: 150px;
+}
+
+.fater-btn {
+    padding: 8px 16px;
+}
+
+/* 显示添加和修改窗口 */
+.addWin,
+.updWin {
+    display: none;
+}
+
+.addWin.fater-model-win-head,
+.updWin.fater-model-win-head {
+    cursor: pointer;
+}

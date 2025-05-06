@@ -13,33 +13,33 @@
 
 <div class="fater-layout-body">
     <div class="fater-panel">
-        <div class="fater-pannel-title">
-            数据查询
-        </div>
         <div class="fater-pannel-body">
-            <div class="fater-form-inline">
-                <input type="text" name="para1" placeholder="请输入学院名称……"/>
+            <div class="dashboard-title">
+                学院信息
             </div>
-            <div class="fater-form-inline">
-                <button type="button" class="fater-btn fater-btn-form-qry">
+            <!-- 使用 flexbox 布局优化输入框和按钮 -->
+            <div class="fater-form-group" >
+                 <div class="fater-form-inline">
+                <input type="text" name="para1" placeholder="请输入学院名称……">
+                </div>
+                     <button type="button" class="fater-btn fater-btn-form-qry fater-btn-search">
                     <span class="fa fa-search"></span>
                 </button>
+                <button event="add" type="button" class="fater-btn fater-btn-primary fater-btn-add">
+                    <span style="color: #FFFFFF;" class="fa fa-plus"></span>
+                </button>
             </div>
-            <div class="clear"></div>
         </div>
-    </div>
 
-    <div class="fater-panel">
-        <div class="fater-pannel-title">
-            <button event="add" type="button" class="fater-btn fater-btn-primary">
-                <span style="color: #FFFFFF;" class="fa fa-plus"></span>
-            </button>
-        </div>
         <div class="fater-pannel-body">
             <div id="tableShow"></div>
         </div>
     </div>
-</div>
+
+
+
+    </div>
+
 
 <div class="addWin fater-model-win fater-model-hidden">
     <div class="fater-model-win-head">
@@ -50,13 +50,13 @@
         <form name="addForm" class="fater-form">
             <div class="fater-form-item">
                 <label>学院名称</label>
-                <input type="text" name="name" placeholder="请输入学院名称"/>
+                <input type="text" name="name" placeholder="请输入学院名称" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
             </div>
-            <div class="fater-form-btns">
-                <button type="button" id="addFormBtn" class="fater-btn fater-btn-primary">
+            <div class="fater-form-btns" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <button type="button" id="addFormBtn" class="fater-btn fater-btn-primary" style="padding: 8px 12px; border: none; border-radius: 4px; background-color: #007BFF; color: white;">
                     提交
                 </button>
-                <button type="reset" class="fater-btn fater-btn-normal">
+                <button type="reset" class="fater-btn fater-btn-normal" style="padding: 8px 12px; border: none; border-radius: 4px; background-color: #6c757d; color: white;">
                     取消
                 </button>
             </div>
@@ -73,14 +73,14 @@
         <form name="updForm" class="fater-form">
             <div class="fater-form-item">
                 <label>学院名称</label>
-                <input type="text" name="name" placeholder="请输入学院名称"/>
+                <input type="text" name="name" placeholder="请输入学院名称" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
             </div>
-            <input type="hidden" name="id"/>
-            <div class="fater-form-btns">
-                <button type="button" id="updFormBtn" class="fater-btn fater-btn-primary">
+            <input type="hidden" name="id">
+            <div class="fater-form-btns" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <button type="button" id="updFormBtn" class="fater-btn fater-btn-primary" style="padding: 8px 12px; border: none; border-radius: 4px; background-color: #007BFF; color: white;">
                     提交
                 </button>
-                <button type="reset" class="fater-btn fater-btn-normal">
+                <button type="reset" class="fater-btn fater-btn-normal" style="padding: 8px 12px; border: none; border-radius: 4px; background-color: #6c757d; color: white;">
                     取消
                 </button>
             </div>

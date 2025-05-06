@@ -1,253 +1,483 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>毕业生去向数据分析可视化</title>
     <style>
-        /* 为 #container 元素添加样式，使其布局在毕业生去向数据分析可视化区域内 */
-        .fater-pannel-body {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        /* 基础样式 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
         }
 
-        #container {
+        /* 主内容区域 */
+        .fater-layout-body {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 45%;
+            padding: 15px;
+            margin-top: 0;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* 给标题添加底部外边距 */
-        .fater-pannel-title {
-            margin-bottom: 20px; /* 可根据需要调整间距大小 */
+        /* 主标题样式 */
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding: 12px 0;
+            text-align: center;
+            position: relative;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .dashboard-title:after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #5470C6, #91CC75);
+            margin: 8px auto 0;
+            border-radius: 2px;
+        }
+
+        /* 图表卡片容器 */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* 单个图表卡片 */
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            padding: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .chart-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 图表标题 */
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            text-align: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .chart-title:after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, #5470C6, #91CC75);
+        }
+
+        /* 图表容器 - 增大高度 */
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .dashboard-title {
+                font-size: 20px;
+                padding: 10px 0;
+            }
+
+            .chart-container {
+                height: 260px;
+            }
         }
     </style>
 </head>
+
 <body>
-   <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
-   {% include 'templates/head.html' %}
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    {% include 'templates/head.html' %}
 
-<div class="fater-layout-header">
-    {% include 'templates/nav.html' %}
-</div>
+    <div class="fater-layout-header">
+        {% include 'templates/nav.html' %}
+    </div>
 
-<div class="fater-layout-menus">
-    {% include 'templates/menus.html' %}
-</div>
-<div class="fater-layout-body">
-    <div class="fater-panel">
-        <div class="fater-pannel-title">毕业生去向数据分析可视化</div>
-        <div class="fater-pannel-body">
-            <div id="location_bar" style="width: 100%; height: 400px;"></div>
-            <div id="size_pie" style="width: 100%; height: 400px;"></div>
-            <div id="type_bar" style="width: 100%; height: 400px;"></div>
-            <div id="position_type_pie" style="width: 100%; height: 400px;"></div>
-            <div id="container"></div>
+    <div class="fater-layout-menus">
+        {% include 'templates/menus.html' %}
+    </div>
+
+    <div class="fater-layout-body">
+        <div class="fater-panel">
+            <div class="dashboard-title">毕业生去向数据分析可视化</div>
+            <div class="fater-panel-body">
+
+                <!-- 第二行图表 - 柱状图和饼状图 -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">各学院毕业人数</div>
+                        <div id="college_bar" class="chart-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">岗位类别分布</div>
+                        <div id="position_pie" class="chart-container"></div>
+                    </div>
+                </div>
+                <!-- 第一行图表 - 饼图 -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">公司类型分布</div>
+                        <div id="type_pie" class="chart-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">公司所在地分布</div>
+                        <div id="location_pie" class="chart-container"></div>
+                    </div>
+                </div>
+
+
+            </div>
         </div>
     </div>
-</div>
 
-<div class="fater-layout-foot">
-    {% include 'templates/foot.html' %}
-</div>
+    <div class="fater-layout-foot">
+        {% include 'templates/foot.html' %}
+    </div>
 
-{% include 'templates/commjs.html' %}
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
-<script type="text/javascript" src="{% static 'js/comm.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/models.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/nav.js' %}"></script>
+    {% include 'templates/commjs.html' %}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/comm.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/models.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/nav.js' %}"></script>
 
-<script>
-    window.onload = function() {
-        var dom = document.getElementById("container");
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(dom);
-        var app = {};
-        var option = null;
+    <script>
+        window.onload = function () {
+            // 从后端获取数据
+            const locationData = {{ location_data|safe }};
+            const typeData = {{ type_data|safe }};
+            const collegeData = {{ college_data|safe }};
+            const positionData = {{ position_data|safe }};
 
-        // 从后端获取数据
-        const locationData = {{ location_data|safe }};
-        const typeData = {{ type_data|safe }};
-        const collegeData = {{ college_data|safe }};
-        const positionData = {{ position_data|safe }};
+            const locationTotal = {{ location_total }};
+            const typeTotal = {{ type_total }};
+            const collegeTotal = {{ college_total }};
+            const positionTotal = {{ position_total }};
 
-        const locationTotal = {{ location_total }};
-        const typeTotal = {{ type_total }};
-        const collegeTotal = {{ college_total }};
-        const positionTotal = {{ position_total }};
-
-        option = {
-            tooltip: {},
-            title: [
-                {
-                    text: '各学院毕业人数',
-                    subtext: '总计 ' + collegeTotal,
-                    left: '25%',
-                    top: '5%',
-                    textAlign: 'center'
-                },
-                {
-                    text: '岗位类别分布',
-                    subtext: '总计 ' + positionTotal,
-                    left: '75%',
-                    top: '5%',
-                    textAlign: 'center'
-                },
-                {
-                    text: '公司类型分布',
-                    subtext: '总计 ' + typeTotal,
-                    left: '25%',
-                    top: '55%',
-                    textAlign: 'center'
-                },
-                {
-                    text: '公司所在地分布',
-                    subtext: '总计 ' + locationTotal,
-                    left: '75%',
-                    top: '55%',
-                    textAlign: 'center'
-                }
-            ],
-            grid: [
-                {
-                    top: '15%',
-                    width: '35%',
-                    bottom: '55%',
-                    left: '10%',
-                    containLabel: true
-                },
-                {
-                    top: '15%',
-                    width: '35%',
-                    bottom: '55%',
-                    left: '55%',
-                    containLabel: true
-                }
-            ],
-            xAxis: [
-                {
-                    type: 'value',
-                    max: collegeTotal,
-                    splitLine: {
-                        show: false
-                    },
-                    gridIndex: 0
-                },
-                {
-                    type: 'value',
-                    max: positionTotal,
-                    splitLine: {
-                        show: false
-                    },
-                    gridIndex: 1
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'category',
-                    data: collegeData.map(item => item.name),
-                    axisLabel: {
-                        interval: 0,
-                        rotate: 30
-                    },
-                    splitLine: {
-                        show: false
-                    },
-                    gridIndex: 0
-                },
-                {
-                    type: 'category',
-                    data: positionData.map(item => item.name),
-                    axisLabel: {
-                        interval: 0,
-                        rotate: 30
-                    },
-                    splitLine: {
-                        show: false
-                    },
-                    gridIndex: 1
-                }
-            ],
-            series: [
-                {
-                    type: 'bar',
-                    stack: 'chart',
-                    z: 3,
-                    label: {
-                        position: 'right',
-                        show: true
-                    },
-                    data: collegeData.map(item => item.value),
-                    xAxisIndex: 0,
-                    yAxisIndex: 0
-                },
-                {
-                    type: 'bar',
-                    stack: 'chart',
-                    silent: true,
-                    itemStyle: {
-                        color: '#eee'
-                    },
-                    data: collegeData.map(item => collegeTotal - item.value),
-                    xAxisIndex: 0,
-                    yAxisIndex: 0
-                },
-                {
-                    type: 'bar',
-                    stack: 'component',
-                    z: 3,
-                    label: {
-                        position: 'right',
-                        show: true
-                    },
-                    data: positionData.map(item => item.value),
-                    xAxisIndex: 1,
-                    yAxisIndex: 1
-                },
-                {
-                    type: 'bar',
-                    stack: 'component',
-                    silent: true,
-                    itemStyle: {
-                        color: '#eee'
-                    },
-                    data: positionData.map(item => positionTotal - item.value),
-                    xAxisIndex: 1,
-                    yAxisIndex: 1
-                },
-                {
-                    type: 'pie',
-                    radius: [0, '30%'],
-                    center: ['25%', '80%'],
-                    data: typeData,
-                    label: {
-                        show: true,
-                        formatter: '{b}: {d}%'
-                    }
-                },
-                {
-                    type: 'pie',
-                    radius: [0, '30%'],
-                    center: ['75%', '80%'],
-                    data: locationData,
-                    label: {
-                        show: true,
-                        formatter: '{b}: {d}%'
-                    }
-                }
-            ]
+            // 初始化所有图表
+            initCollegeBarChart(collegeData, collegeTotal);
+            initPositionPieChart(positionData, positionTotal);
+            initTypePieChart(typeData, typeTotal);
+            initLocationPieChart(locationData, locationTotal);
         };
 
-        if (option && typeof option === 'object') {
-            myChart.setOption(option);
+        // 各学院毕业人数柱状图 - 调整图表内边距和字体大小
+        function initCollegeBarChart(data, total) {
+            const chart = echarts.init(document.getElementById('college_bar'));
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    formatter: '{b}: {c}人'
+                },
+                grid: {
+                    left: '15%',
+                    right: '3%',
+                    bottom: '8%',
+                    top: '10%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        color: '#666',
+                        fontSize: '1.2vw' // 使用视口宽度单位
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ddd'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: data.map(item => item.name),
+                    axisLabel: {
+                        color: '#666',
+                        fontSize: '1.2vw', // 使用视口宽度单位
+                        interval: 0
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ddd'
+                        }
+                    }
+                },
+                series: [{
+                    name: '人数',
+                    type: 'bar',
+                    data: data.map(item => item.value),
+                    barWidth: '50%',
+                    itemStyle: {
+                        color: function (params) {
+                            const colorList = ['#5470C6', '#91CC75', '#FAC858', '#EE6666', '#73C0DE'];
+                            return colorList[params.dataIndex % colorList.length];
+                        },
+                        borderRadius: [0, 3, 3, 0]
+                    },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{c}',
+                        fontSize: '1.2vw', // 使用视口宽度单位
+                        color: '#666'
+                    }
+                }]
+            };
+            chart.setOption(option);
+
+            window.addEventListener('resize', function () {
+                chart.resize();
+            });
         }
-    };
-</script>
+
+        // 岗位类别分布饼状图
+        function initPositionPieChart(data, total) {
+            const chart = echarts.init(document.getElementById('position_pie'));
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'horizontal',
+                    bottom: '5%',
+                    left: 'center',
+                    textStyle: {
+                        color: '#333',
+                        fontSize: '1.3vw', // 使用视口宽度单位
+                        fontWeight: '500'
+                    },
+                    itemWidth: 12,
+                    itemHeight: 12,
+                    itemGap: 15,
+                    formatter: function (name) {
+                        const item = data.find(item => item.name === name);
+                        return `${name} (${item.value})`;
+                    }
+                },
+                series: [
+                    {
+                        name: '岗位类别',
+                        type: 'pie',
+                        radius: ['30%', '70%'],
+                        center: ['50%', '40%'],
+                        roseType: 'radius',
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 5,
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        label: {
+                            show: true,
+                            position: 'outside',
+                            formatter: '{b}: {d}%',
+                            fontSize: '1.3vw', // 使用视口宽度单位
+                            color: '#333',
+                            fontWeight: '500',
+                            lineHeight: 20
+                        },
+                        labelLine: {
+                            show: true,
+                            length: '2vw', // 使用视口宽度单位
+                            length2: '3vw', // 使用视口宽度单位
+                            lineStyle: {
+                                color: '#ccc'
+                            }
+                        },
+                        data: data,
+                        color: ['#FF6B6B', '#F79F1F', '#20BF6B', '#45AAF2', '#A55eea', '#FD9644']
+                    }
+                ]
+            };
+            chart.setOption(option);
+
+            window.addEventListener('resize', function () {
+                chart.resize();
+            });
+        }
+
+        // 公司类型分布饼图 - 调整图例位置和大小
+        function initTypePieChart(data, total) {
+            const chart = echarts.init(document.getElementById('type_pie'));
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: '3%',
+                    top: 'center',
+                    textStyle: {
+                        color: '#666',
+                        fontSize: '1.2vw' // 使用视口宽度单位
+                    },
+                    itemHeight: 12,
+                    itemGap: 8,
+                    formatter: function (name) {
+                        const item = data.find(item => item.name === name);
+                        return `${name} (${item.value})`;
+                    }
+                },
+                series: [
+                    {
+                        name: '公司类型',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        center: ['40%', '50%'],
+                        avoidLabelOverlap: true,
+                        itemStyle: {
+                            borderRadius: 4,
+                            borderColor: '#fff',
+                            borderWidth: 1
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{d}%',
+                            fontSize: '1.2vw' // 使用视口宽度单位
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '1.4vw', // 使用视口宽度单位
+                                fontWeight: 'bold'
+                            },
+                            itemStyle: {
+                                shadowBlur: 8,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.3)'
+                            }
+                        },
+                        labelLine: {
+                            show: true,
+                            length: '1.5vw', // 使用视口宽度单位
+                            length2: '2vw', // 使用视口宽度单位
+                        },
+                        data: data
+                    }
+                ]
+            };
+            chart.setOption(option);
+
+            window.addEventListener('resize', function () {
+                chart.resize();
+            });
+        }
+
+        // 公司所在地分布饼图 - 调整图例位置和大小
+        function initLocationPieChart(data, total) {
+            const chart = echarts.init(document.getElementById('location_pie'));
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: '3%',
+                    top: 'center',
+                    textStyle: {
+                        color: '#666',
+                        fontSize: '1.2vw' // 使用视口宽度单位
+                    },
+                    itemHeight: 12,
+                    itemGap: 8,
+                    formatter: function (name) {
+                        const item = data.find(item => item.name === name);
+                        return `${name} (${item.value})`;
+                    }
+                },
+                series: [
+                    {
+                        name: '所在地',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        center: ['40%', '50%'],
+                        avoidLabelOverlap: true,
+                        itemStyle: {
+                            borderRadius: 4,
+                            borderColor: '#fff',
+                            borderWidth: 1
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{d}%',
+                            fontSize: '1.2vw' // 使用视口宽度单位
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '1.4vw', // 使用视口宽度单位
+                                fontWeight: 'bold'
+                            },
+                            itemStyle: {
+                                shadowBlur: 8,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.3)'
+                            }
+                        },
+                        labelLine: {
+                            show: true,
+                            length: '1.5vw', // 使用视口宽度单位
+                            length2: '2vw', // 使用视口宽度单位
+                        },
+                        data: data
+                    }
+                ]
+            };
+            chart.setOption(option);
+
+            window.addEventListener('resize', function () {
+                chart.resize();
+            });
+        }
+    </script>
 
 </body>
+
 </html>
