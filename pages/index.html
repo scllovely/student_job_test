@@ -151,6 +151,7 @@
         .fater-num-panel:nth-child(4) {
             animation-delay: 0.4s;
         }
+
     </style>
 </head>
 <body>
@@ -190,16 +191,17 @@
     <!-- 课表信息面板 -->
     <div class="fater-panel">
         <div class="fater-pannel-title">
-            <i class="fas fa-calendar-alt"></i> 课表信息
+            <i class="fas fa-calendar-alt"></i> 岗位信息
         </div>
         <div class="fater-pannel-body">
-            <div class="table-responsive">
-                <table class="fater-table">
-                    <!-- 表格内容将通过JS动态加载 -->
-                </table>
-            </div>
+
+
+            <div id="tableShow"></div>
+
+
         </div>
     </div>
+</div>
 </div>
 
 <div class="fater-layout-foot">
@@ -228,5 +230,6 @@
         });
     });
 </script>
+<script src="{% static 'js/jobs2.js' %}" type="text/javascript"></script>
 </body>
 </html>
