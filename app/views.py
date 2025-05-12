@@ -118,8 +118,8 @@ class SysView(BaseView):
             return SysView.getSessionInfo(request)
 
         elif module == 'show':
-
-            return render(request, 'index.html')
+            companies = models.Companies.objects.all()
+            return render(request, 'index.html',{'companies': companies})
 
         elif module == 'sysNum':
 

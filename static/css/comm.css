@@ -445,6 +445,7 @@ body{
     border: 1px solid transparent;
     cursor: pointer;
 
+
 }
 .fater-btn-block {
     display: block;
@@ -494,7 +495,7 @@ body{
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     /* 过渡效果 */
     transition: all 0.3s ease;
-    height:36px;
+
 }
 .fater-btn-danger:hover {
     background-color: #d9534f;

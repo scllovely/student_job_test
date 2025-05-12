@@ -25,6 +25,7 @@ class Class(models.Model):
 class Companies(models.Model):
     id = models.AutoField('记录编号', primary_key=True)
     name = models.CharField('企业名称', max_length=30, null=False)
+    introduce = models.CharField('公司简介', max_length=200, null=False,default="公司创立于2000年,是行业领先的基础设施和智能终端供应商。")
     phone = models.CharField('联系电话', max_length=11, null=False)
     address = models.CharField('联系地址', max_length=64, null=False)
     class Meta:
