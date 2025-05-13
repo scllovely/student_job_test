@@ -1470,6 +1470,15 @@ class TripartiteInfoView(BaseView):
 可视化
 '''
 
+import json
+import numpy as np
+from django.http import JsonResponse
+import pandas as pd
+from django.shortcuts import render
+from django.views import View
+from django.db.models import Q
+from .models import TripartiteInfo, Colleges
+
 
 class GraduateEmploymentAnalysisView(BaseView):
     def get(self, request, module, *args, **kwargs):
@@ -1478,49 +1487,94 @@ class GraduateEmploymentAnalysisView(BaseView):
             if request.session.get('type') != 0:
                 return self.error()
 
-            # 获取三方信息数据
-            tripartite_info = TripartiteInfo.objects.all().values()
-            df = pd.DataFrame(list(tripartite_info))
+            # 获取筛选参数
+            graduation_year = request.GET.get('graduation_year', '')
+            gender = request.GET.get('gender', '')
+            college = request.GET.get('college', '')
 
-            # 获取每个学院的学生人数
-            college_stats = models.TripartiteInfo.objects.all().values()
-            df2 = pd.DataFrame(list(college_stats))
+            # 构建查询条件
+            query = Q()
+            if graduation_year:
+                query &= Q(graduation_year=graduation_year)
+            if gender:
+                query &= Q(gender=gender)
+            if college:
+                query &= Q(college=college)
 
-            # 获取岗位人数
-            position_stats = models.TripartiteInfo.objects.all().values()
-            df3 = pd.DataFrame(list(position_stats))
+            try:
+                # 获取三方信息数据
+                tripartite_info = TripartiteInfo.objects.filter(query).values()
+                df = pd.DataFrame(list(tripartite_info))
 
-            # 数据统计和分析
-            location_count = df['company_location'].value_counts()
-            type_count = df['company_category'].value_counts()
-            college_count = df2['college'].value_counts()
-            position_count = df3['position_category'].value_counts()
+                # 获取每个学院的学生人数
+                college_stats = TripartiteInfo.objects.filter(query).values()
+                df2 = pd.DataFrame(list(college_stats))
 
-            # 转换为适合 ECharts 使用的格式
-            location_data = [{"name": key, "value": value} for key, value in location_count.items()]
-            type_data = [{"name": key, "value": value} for key, value in type_count.items()]
-            college_data = [{"name": key, "value": value} for key, value in college_count.items()]
-            position_data = [{"name": key, "value": value} for key, value in position_count.items()]
+                # 获取岗位人数
+                position_stats = TripartiteInfo.objects.filter(query).values()
+                df3 = pd.DataFrame(list(position_stats))
 
-            # 计算总计数量
-            location_total = sum(location_count.values)
-            type_total = sum(type_count.values)
-            college_total = sum(college_count.values)
-            position_total = sum(position_count.values)
+                # 数据统计和分析
+                location_count = df['company_location'].value_counts()
+                type_count = df['company_category'].value_counts()
+                college_count = df2['college'].value_counts()
+                position_count = df3['position_category'].value_counts()
 
-            context = {
-                'location_data': location_data,
-                'type_data': type_data,
-                'location_total': location_total,
-                'type_total': type_total,
+                # 转换为适合 ECharts 使用的格式
+                location_data = [{"name": key, "value": int(value)} for key, value in location_count.items()]
+                type_data = [{"name": key, "value": int(value)} for key, value in type_count.items()]
+                college_data = [{"name": key, "value": int(value)} for key, value in college_count.items()]
+                position_data = [{"name": key, "value": int(value)} for key, value in position_count.items()]
 
-                'college_data': college_data,
-                'college_total': college_total,
-                'position_data': position_data,
-                'position_total': position_total,
-            }
-            print(location_total, type_total, context)
-            return render(request, 'analysistest.html', context)
+                # 计算总计数量
+                location_total = int(sum(location_count.values))
+                type_total = int(sum(type_count.values))
+                college_total = int(sum(college_count.values))
+                position_total = int(sum(position_count.values))
 
+                # 获取所有毕业年份
+                graduation_years = TripartiteInfo.objects.values_list('graduation_year', flat=True).distinct().order_by('graduation_year')
+
+                # 获取所有学院
+                colleges = Colleges.objects.all()
+
+                # 如果是AJAX请求，返回JSON数据
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'code': 0,
+                        'msg': '获取数据成功',
+                        'data': {
+                            'location_data': location_data,
+                            'type_data': type_data,
+                            'location_total': location_total,
+                            'type_total': type_total,
+                            'college_data': college_data,
+                            'college_total': college_total,
+                            'position_data': position_data,
+                            'position_total': position_total,
+                        }
+                    })
+
+                # 否则返回HTML页面
+                context = {
+                    'location_data': location_data,
+                    'type_data': type_data,
+                    'location_total': location_total,
+                    'type_total': type_total,
+                    'college_data': college_data,
+                    'college_total': college_total,
+                    'position_data': position_data,
+                    'position_total': position_total,
+                    'graduation_years': graduation_years,
+                    'colleges': colleges,
+                }
+                return render(request, 'analysistest.html', context)
+            except Exception as e:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'code': 1,
+                        'msg': f'获取数据失败: {str(e)}'
+                    })
+                return self.error()
         else:
             return self.error()
