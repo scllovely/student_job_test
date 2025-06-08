@@ -86,11 +86,11 @@ DATABASES = {
     'default':
     {
         'ENGINE': 'django.db.backends.mysql', # 数据库引擎
-        'NAME': 'student_jobs',
-        'HOST': 'localhost',
-        'PORT': 3306,
-        'USER': 'root',
-        'PASSWORD': 'Scm2070668709',
+        'NAME': 'student_jobs', # 指定要连接的数据库名称
+        'HOST': 'localhost', # 数据库服务器地址，此处为本地数据库
+        'PORT': 3306, # 数据库服务器监听的端口号
+        'USER': 'root', # 数据库用户名
+        'PASSWORD': 'Scm2070668709', # 数据库用户密码
     }
 }
 

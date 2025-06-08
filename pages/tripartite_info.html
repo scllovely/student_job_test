@@ -31,6 +31,7 @@
                         <th>岗位类别</th>
                         <th>公司类别</th>
                         <th>状态</th>
+                        <th>操作</th> <!-- 新增操作列 -->
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,10 @@
                         <td>{{ info.position_category }}</td>
                         <td>{{ info.company_category }}</td>
                         <td>{{ info.status }}</td>
+                        <td>
+                            <!-- 新增查看按钮 -->
+                            <button type="button" class="fater-btn fater-btn-info fater-btn-sm" onclick="window.location.href='/jobs/tripartite_info/view/{{ info.id }}/'">查看</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

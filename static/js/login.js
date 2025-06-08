@@ -11,6 +11,16 @@ $(document).ready(function() {
         var userName = $('input[name="userName"]').val();
         var passWord = $('input[name="passWord"]').val();
 
+        // 检查账号和密码是否为空
+        if (userName === '') {
+            showError('账号不能为空');
+            return;
+        }
+        if (passWord === '') {
+            showError('密码不能为空');
+            return;
+        }
+
         // 检查是否勾选记住密码
         if ($('#rememberMe').is(':checked')) {
             localStorage.setItem('rememberMe', 'true');

@@ -1,4 +1,3 @@
-<!-- pages/edit_tripartite_info.html -->
 <!DOCTYPE html>
 {% load static %}
 <html>
@@ -117,7 +116,6 @@
         box-sizing: border-box;
         font-size: 0.9rem;
         transition: border-color 0.2s;
-        text-align: left;
     }
 
     .fater-form-item input[type="text"]:focus,
@@ -161,7 +159,7 @@
 
     /* 按钮样式 */
     .fater-btn {
-        padding: 1.0px ;
+        padding: 1.0rem 1.2rem;
         border-radius: 4px;
         font-size: 0.9rem;
         font-weight: 500;
@@ -173,6 +171,7 @@
     .fater-btn-primary {
         background-color: var(--primary-color);
         color: white;
+        border: 1px solid var(--border-color);
     }
 
     .fater-btn-primary:hover {
@@ -228,50 +227,49 @@
 <div class="fater-layout-body">
     <div class="fater-panel">
         <div class="fater-pannel-title">
-            修改三方信息
+            三方信息详情
         </div>
         <div class="fater-pannel-body">
-            <form action="/jobs/tripartite_info/edit/" method="post" class="fater-form" id="editForm">
-                {% csrf_token %}
+            <form name="viewForm" class="fater-form">
                 <!-- 个人信息模块 -->
                 <div class="fater-form-module">
                     <h3>个人信息</h3>
                     <div class="fater-form-module-content">
                         <div class="fater-form-item">
                             <label>学生姓名</label>
-                            <input type="text" id="student_name" name="student_name" value="{{ info.student_name }}" readonly />
+                            <input type="text" name="student_name" value="{{ info.student_name }}" readonly />
                         </div>
                         <div class="fater-form-item">
-                            <label>学生身份证号</label>
-                            <input type="text" id="student_id_card" name="student_id_card" value="{{ info.student_id_card }}" required/>
-                        </div>
-                        <div class="fater-form-item">
-                            <label>学校</label>
-                            <input type="text" id="school" name="school" value="{{ info.school }}" readonly/>
-                        </div>
-                        <div class="fater-form-item">
-                            <label>毕业年份</label>
-                            <input type="text" id = 'graduation_year' name="graduation_year" value="{{ info.graduation_year }}" readonly/>
+                            <label>学生所在学校</label>
+                            <input type="text" name="school" value="{{ info.school }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>学院</label>
-                            <input type="text" id="college" name="college" value="{{ info.college }}" readonly />
+                            <input type="text" name="college" value="{{ info.college }}" readonly />
                         </div>
                         <div class="fater-form-item">
-                            <label>专业</label>
-                            <input type="text" id="major" name="major" value="{{ info.major }}" readonly/>
+                            <label>毕业年份</label>
+                            <input type="text" name="graduation_year" value="{{ info.graduation_year }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>专业名称</label>
+                            <input type="text" name="major" value="{{ info.major }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>班级</label>
-                            <input type="text" id="class_name" name="class_name" value="{{ info.class_name }}" readonly/>
+                            <input type="text" name="class_name" value="{{ info.class_name }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>性别</label>
-                            <input type="text" id="gender" name="gender" value="{{ info.gender }}" required/>
+                            <input type="text" name="gender" value="{{ info.gender }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>学生身份证号</label>
+                            <input type="text" name="student_id_card" value="{{ info.student_id_card }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>电话</label>
-                            <input type="text" id="phone_number" name="phone_number" value="{{ info.phone_number }}" required/>
+                            <input type="text" name="phone_number" value="{{ info.phone_number }}" readonly/>
                         </div>
                     </div>
                 </div>
@@ -282,60 +280,46 @@
                     <div class="fater-form-module-content">
                         <div class="fater-form-item">
                             <label>公司名称</label>
-                            <input type="text" id="company_name" name="company_name" value="{{ info.company_name }}" required/>
+                            <input type="text" name="company_name" value="{{ info.company_name }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>公司所在地</label>
-                            <input type="text" id="company_location" name="company_location" value="{{ info.company_location }}" required/>
+                            <input type="text" name="company_location" value="{{ info.company_location }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>公司类别</label>
-                            <select name="company_category" required>
-                                <option value="国企" {% if info.company_category == '国企' %}selected{% endif %}>国企</option>
-                                <option value="央企" {% if info.company_category == '央企' %}selected{% endif %}>央企</option>
-                                <option value="私企" {% if info.company_category == '私企' %}selected{% endif %}>私企</option>
-                                <option value="外企" {% if info.company_category == '外企' %}selected{% endif %}>外企</option>
-                                <option value="其他" {% if info.company_category == '其他' %}selected{% endif %}>其他</option>
-                            </select>
+                            <input type="text" name="company_category" value="{{ info.company_category }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>公司规模</label>
-                            <select name="company_scale" required>
-                                <option value="大型企业" {% if info.company_scale == '大型企业' %}selected{% endif %}>大型企业</option>
-                                <option value="中型企业" {% if info.company_scale == '中型企业' %}selected{% endif %}>中型企业</option>
-                                <option value="小型企业" {% if info.company_scale == '小型企业' %}selected{% endif %}>小型企业</option>
-                            </select>
-                        </div>
-                        <div class="fater-form-item">
-                            <label>薪资</label>
-                            <input type="text" id="salary" name="salary" value="{{ info.salary }}" required/>
+                            <input type="text" name="company_scale" value="{{ info.company_scale }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>岗位名称</label>
-                            <input type="text" id="position_name" name="position_name" value="{{ info.position_name }}" required/>
+                            <input type="text" name="position_name" value="{{ info.position_name }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>薪资</label>
+                            <input type="text" name="salary" value="{{ info.salary }}" readonly/>
                         </div>
                         <div class="fater-form-item">
                             <label>岗位类别</label>
-                            <select name="position_category" required>
-                                <option value="技术类岗位" {% if info.position_category == '技术类岗位' %}selected{% endif %}>技术类岗位</option>
-                                <option value="运营类岗位" {% if info.position_category == '运营类岗位' %}selected{% endif %}>运营类岗位</option>
-                                <option value="销售类岗位" {% if info.position_category == '销售类岗位' %}selected{% endif %}>销售类岗位</option>
-                                <option value="设计类岗位" {% if info.position_category == '设计类岗位' %}selected{% endif %}>设计类岗位</option>
-                                <option value="教育类岗位" {% if info.position_category == '教育类岗位' %}selected{% endif %}>教育类岗位</option>
-                                <option value="管理类岗位" {% if info.position_category == '管理类岗位' %}selected{% endif %}>管理类岗位</option>
-                                <option value="其他" {% if info.position_category == '其他' %}selected{% endif %}>其他</option>
-                            </select>
+                            <input type="text" name="position_category" value="{{ info.position_category }}" readonly/>
+                        </div>
+                        <div class="fater-form-item">
+                            <label>状态</label>
+                            <input type="text" name="status" value="{{ info.status }}" readonly/>
                         </div>
                     </div>
                 </div>
 
-                <div class="fater-form-btns">
-                    <button type="submit" class="fater-btn fater-btn-primary">
-                        提交修改
-                    </button>
-                    <button type="reset" class="fater-btn fater-btn-normal">
-                        取消
-                    </button>
+                <div class="fater-form-group">
+                    <div class="fater-form-group-title">
+                        <span>操作</span>
+                    </div>
+                    <div class="fater-form-group-body">
+                        <button type="button" class="fater-btn fater-btn-normal fater-btn-sm" id="backButton">返回</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -348,25 +332,18 @@
 
 {% include 'templates/commjs.html' %}
 <script>
-    document.getElementById('editForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        var form = this;
-        var xhr = new XMLHttpRequest();
-        xhr.open(form.method, form.action, true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                if (response.status === 'success') {
-                    window.location.href = '/jobs/tripartite_info/show/';
-                }
-            }
-        };
-        var formData = new FormData(form);
-        var encodedData = new URLSearchParams(formData).toString();
-        xhr.send(encodedData);
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('backButton').addEventListener('click', function() {
+        // 获取当前用户类型
+        const userType = '{{ user.type }}';  // 从模板变量获取用户类型
+        console.log("身份:", userType);
+        if (userType === '0') {  // 0表示管理员
+            window.location.href = '/jobs/tripartite_info/teacher/show/';
+        } else {
+            window.location.href = '/jobs/tripartite_info/show/';
+        }
     });
+});
 </script>
 </body>
 </html>

@@ -13,7 +13,8 @@ urlpatterns = [
     path('educationLogs/<str:module>/', app.views.EducationLogsView.as_view()),
     path('projectLogs/<str:module>/', app.views.ProjectLogsView.as_view()),
     path('sendLogs/<str:module>/', app.views.SendLogs.as_view()),
-
-    path('tripartite_info/<path:module>/', app.views.TripartiteInfoView.as_view()),
+    path('tripartite_info/view/<int:id>/', app.views.TripartiteInfoView.as_view(), {'module': 'view'}),
+    path('tripartite_info/teacher/show/', app.views.TripartiteInfoView.as_view(), {'module': 'teacher/show'}),
+    path('tripartite_info/<str:module>/', app.views.TripartiteInfoView.as_view()),
     path('graduate_employment_analysis/<str:module>/', app.views.GraduateEmploymentAnalysisView.as_view(), name='graduate_employment_analysis'),
 ]

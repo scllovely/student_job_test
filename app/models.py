@@ -78,6 +78,7 @@ class Students(models.Model):
     name = models.CharField('姓名', max_length=20, null=False)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE, db_column='class_id')
     gender = models.CharField('用户性别', max_length=4, default='女', null=False)
+    graduation_year = models.IntegerField(default=2025, verbose_name="毕业年份", null=True, blank=True)
 
     class Meta:
         db_table = 'students'

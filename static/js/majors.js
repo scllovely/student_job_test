@@ -68,6 +68,11 @@ $(function (){
 				title: "专业名称",
 				align: "center",
 			},
+            {
+				field: "college_name",
+				title: "所属学院名称",
+				align: "center",
+			},
 			{
 				field: "createTime",
 				title: "建立时间",
@@ -98,6 +103,7 @@ $(function (){
     $(".fater-btn-form-qry").on("click", ()=>{
 
         tableView.where["name"] = $("[name=para1]").val();
+        tableView.where["college_id"] = $("[name=college_id]").val();
 
         $.table(tableView);
     });

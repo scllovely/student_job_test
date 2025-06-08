@@ -140,33 +140,39 @@ class SysView(BaseView):
         if request.method == "POST":
             userName = request.POST.get("userName")
             passWord = request.POST.get("passWord")
-
             # 检查用户名是否存在
             user = models.Users.objects.filter(userName=userName).first()
+            # 检查账号和密码是否为空
+            if not userName:
+                return JsonResponse({
+                    "code": 1,
+                    "msg": "账号不能为空"
+                })
+            if not passWord:
+                return JsonResponse({
+                    "code": 1,
+                    "msg": "密码不能为空"
+                })
             if not user:
                 return JsonResponse({
                     "code": 1,
                     "msg": "账号不存在"
                 })
-
             # 检查密码是否正确
             if user.passWord != passWord:
                 return JsonResponse({
                     "code": 1,
                     "msg": "密码不正确"
                 })
-
             # 登录成功，设置session信息
             request.session["user"] = user.id
             request.session["type"] = user.type
             request.session["userName"] = userName
-
             return JsonResponse({
                 "code": 0,
                 "msg": "登录成功",
                 "type": user.type  # 添加用户类型到响应中
             })
-
         return render(request, "login.html")
 
     def getSessionInfo(request):
@@ -333,7 +339,8 @@ class MajorsView(BaseView):
     def get(self, request, module, *args, **kwargs):
 
         if module == 'show':
-            return render(request, 'majors.html')
+            colleges = models.Colleges.objects.all()  # 获取所有学院信息
+            return render(request, 'majors.html',{'colleges': colleges})
         elif module == 'info':
             return self.getInfo(request)
         elif module == 'page':
@@ -343,7 +350,16 @@ class MajorsView(BaseView):
 
     def post(self, request, module, *args, **kwargs):
         if module == 'add':
-            return self.addInfo(request)
+            name = request.POST.get('name')
+            college_id = request.POST.get('college_id')
+            try:
+                return self.addInfo(request)
+
+            except models.Colleges.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': '所选学院不存在'})
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': f'添加失败: {str(e)}'})
+
         elif module == 'upd':
             return self.updInfo(request)
         elif module == 'del':
@@ -368,11 +384,16 @@ class MajorsView(BaseView):
         pageIndex = request.GET.get('pageIndex', 1)
         pageSize = request.GET.get('pageSize', 10)
         name = request.GET.get('name')
+        college_id = request.GET.get('college_id')  # 新增：获取学院 ID
+
 
         qruery = Q();
 
         if BaseView.isExit(name):
             qruery = qruery & Q(name__contains=name)
+
+        if BaseView.isExit(college_id):  # 新增：添加学院筛选条件
+            qruery = qruery & Q(college__id=college_id)
 
         data = models.Majors.objects.filter(qruery)
         paginator = Paginator(data, pageSize)
@@ -383,7 +404,8 @@ class MajorsView(BaseView):
             temp = {
                 'id': item.id,
                 'name': item.name,
-                'createTime': item.createTime
+                'createTime': item.createTime,
+                'college_name': item.college.name if item.college else ''  # 新增：添加所属学院名称
             }
             resl.append(temp)
 
@@ -396,7 +418,8 @@ class MajorsView(BaseView):
     def addInfo(self, request):
 
         models.Majors.objects.create(name=request.POST.get('name'),
-                                     createTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                                     createTime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+                                     college_id = request.POST.get('college_id')
                                      )
 
         return BaseView.success()
@@ -722,7 +745,7 @@ class UsersView(BaseView):
 
     def addInfo(self, request):
 
-        models.Users.objects.create(
+        user = models.Users.objects.create(
             userName=request.POST.get('userName'),
             passWord=request.POST.get('passWord'),
             name=request.POST.get('name'),
@@ -782,6 +805,8 @@ class StudentsView(BaseView):
             return self.updInfo(request)
         elif module == 'del':
             return self.delInfo(request)
+        elif module == 'import':
+            return self.importStudents(request)
         else:
             return self.error()
 
@@ -885,8 +910,8 @@ class StudentsView(BaseView):
             phone_number=request.POST.get('phone'),
             name=request.POST.get('name'),
             gender=request.POST.get('gender'),
-            class_id=models.Class.objects.get(class_id=request.POST.get('classId'))
-
+            class_id=models.Class.objects.get(class_id=request.POST.get('classId')),
+            graduation_year=request.POST.get('graduation_year')
         )
 
         return BaseView.success()
@@ -916,6 +941,83 @@ class StudentsView(BaseView):
         student.delete()
 
         return BaseView.success()
+
+    def importStudents(self, request):
+        try:
+            if 'file' not in request.FILES:
+                return JsonResponse({'code': 1, 'msg': '请选择要导入的Excel文件'})
+            
+            file = request.FILES['file']
+            if not file.name.endswith(('.xls', '.xlsx')):
+                return JsonResponse({'code': 1, 'msg': '请上传Excel文件(.xls或.xlsx)'})
+            
+            # 读取Excel文件
+            df = pd.read_excel(file)
+            
+            # 验证必要的列是否存在
+            required_columns = ['userName', 'passWord', 'name', 'gender', 'age', 'phone', 
+                              'collegeId', 'majorId', 'classId', 'address', 'birthday', 'graduation_year']
+            missing_columns = [col for col in required_columns if col not in df.columns]
+            if missing_columns:
+                return JsonResponse({'code': 1, 'msg': f'Excel文件缺少必要的列: {", ".join(missing_columns)}'})
+            
+            success_count = 0
+            error_count = 0
+            error_messages = []
+            
+            # 遍历每一行数据
+            for index, row in df.iterrows():
+                try:
+                    # 检查用户名是否已存在
+                    if models.Users.objects.filter(userName=row['userName']).exists():
+                        error_messages.append(f'第{index+2}行: 用户名 {row["userName"]} 已存在')
+                        error_count += 1
+                        continue
+                    
+                    # 创建用户
+                    user = models.Users.objects.create(
+                        userName=row['userName'],
+                        passWord=row['passWord'],
+                        name=row['name'],
+                        gender=row['gender'],
+                        age=row['age'],
+                        phone=row['phone'],
+                        type=2  # 学生类型
+                    )
+                    
+                    # 创建学生信息
+                    models.Students.objects.create(
+                        id=row['userName'],  # 使用用户名作为ID
+                        address=row['address'],
+                        birthday=row['birthday'],
+                        status=0,  # 默认状态
+                        college=models.Colleges.objects.get(id=row['collegeId']),
+                        major=models.Majors.objects.get(id=row['majorId']),
+                        user=user,
+                        phone_number=row['phone'],
+                        name=row['name'],
+                        gender=row['gender'],
+                        class_id=models.Class.objects.get(class_id=row['classId']),
+                        graduation_year=row['graduation_year']
+                    )
+                    
+                    success_count += 1
+                except Exception as e:
+                    error_messages.append(f'第{index+2}行: {str(e)}')
+                    error_count += 1
+            
+            # 返回导入结果
+            if error_count == 0:
+                return JsonResponse({'code': 0, 'msg': f'成功导入{success_count}条学生信息'})
+            else:
+                return JsonResponse({
+                    'code': 1, 
+                    'msg': f'导入完成，成功{success_count}条，失败{error_count}条',
+                    'errors': error_messages
+                })
+                
+        except Exception as e:
+            return JsonResponse({'code': 1, 'msg': f'导入失败: {str(e)}'})
 
 
 '''
@@ -1314,6 +1416,7 @@ class SendLogs(BaseView):
 
 class TripartiteInfoView(BaseView):
     def get(self, request, module, *args, **kwargs):
+
         if module == 'show':
             user = request.session.get('user')
             student = models.Students.objects.filter(user__id=user).first()
@@ -1349,18 +1452,23 @@ class TripartiteInfoView(BaseView):
             pageSize = int(request.GET.get('pageSize', 10))
             collegeId = request.GET.get('collegeId')
             majorId = request.GET.get('majorId')
+            status = request.GET.get('status')
             keyword = request.GET.get('keyword')
 
             queryset = models.TripartiteInfo.objects.select_related('student__college', 'student__major').all()
+
+            # 添加筛选条件
             if collegeId:
                 queryset = queryset.filter(student__college_id=collegeId)
             if majorId:
                 queryset = queryset.filter(student__major_id=majorId)
+            if status:
+                queryset = queryset.filter(status=status)
             if keyword:
                 queryset = queryset.filter(
-                    models.Q(student_name__icontains=keyword) |
-                    models.Q(company_location__icontains=keyword) |
-                    models.Q(position_name__icontains=keyword)
+                    Q(student_name__icontains=keyword) |
+                    Q(company_name__icontains=keyword) |
+                    Q(position_name__icontains=keyword)
                 )
 
             total_count = queryset.count()
@@ -1389,18 +1497,76 @@ class TripartiteInfoView(BaseView):
 
             data = {
                 'list': result,
-                'totalPage': totalPage
+                'totalPage': totalPage,
+                'total': total_count
+            }
+            return JsonResponse({'code': 0, 'data': data})
+        elif module == 'view':
+            id = kwargs.get('id')  # 从URL参数中获取id
+            try:
+                info = models.TripartiteInfo.objects.get(id=id)
+                context = {
+                    'info': {
+                        'id': info.id,
+                        'student_name': info.student_name,
+                        'student_id_card': info.student_id_card,
+                        'school': info.school,
+                        'college': info.college,
+                        'major': info.major,
+                        'class_name': info.class_name,
+                        'gender': info.gender,
+                        'phone_number': info.phone_number,
+                        'company_name': info.company_name,
+                        'company_location': info.company_location,
+                        'company_scale': info.company_scale,
+                        'company_category': info.company_category,
+                        'position_name': info.position_name,
+                        'position_category': info.position_category,
+                        'salary': info.salary,
+                        'status': info.status,
+                        'tripartite_info': info,
+                    },
+                    'user': {
+                        'type': request.session.get('type')  # 添加用户类型到上下文
+                    }
+                }
+                return render(request, 'view_tripartite_info.html', context)
+            except models.TripartiteInfo.DoesNotExist:
+                return JsonResponse({'code': 1, 'msg': '信息不存在'})
+        elif module == 'info':
+            id = request.GET.get('id')
+            info = models.TripartiteInfo.objects.filter(id=id).first()
+            if not info:
+                return JsonResponse({'code': 1, 'msg': '信息不存在'})
+            data = {
+                'student_name': info.student_name,
+                'student_id_card': info.student_id_card,
+                'school': info.school,
+                'college': info.college,
+                'major': info.major,
+                'class_name': info.class_name,
+                'gender': info.gender,
+                'phone_number': info.phone_number,
+                'company_name': info.company_name,
+                'company_location': info.company_location,
+                'company_scale': info.company_scale,
+                'company_category': info.company_category,
+                'position_name': info.position_name,
+                'position_category': info.position_category,
+                'salary': info.salary
             }
             return JsonResponse({'code': 0, 'data': data})
         elif module == 'audit':
             id = request.POST.get('id')
             status = request.POST.get('status')
             user = request.session.get('user')
+            print(f"接收到的信息ID: {id}，审核状态: {status}")  # 添加日志
             student = models.Students.objects.filter(user__id=user).first()
             try:
                 tripartite_info = models.TripartiteInfo.objects.get(id=id)
                 tripartite_info.status = status
                 tripartite_info.save()
+                print(f"审核状态更新为: {status}，信息ID: {id}")  # 添加日志
                 return JsonResponse({'code': 0, 'msg': '审核成功'})
             except models.TripartiteInfo.DoesNotExist:
                 return JsonResponse({'code': 1, 'msg': '三方信息不存在'})
@@ -1409,6 +1575,14 @@ class TripartiteInfoView(BaseView):
             student = models.Students.objects.filter(user__id=user).first()
             unapproved_info = models.TripartiteInfo.objects.filter(student=student, status='未通过').first()
             return render(request, 'edit_tripartite_info.html', {'info': unapproved_info, 'student': student})
+        elif module == 'delete':
+            id = request.POST.get('id')
+            try:
+                info = models.TripartiteInfo.objects.get(id=id)
+                info.delete()
+                return JsonResponse({'code': 0, 'msg': '删除成功'})
+            except models.TripartiteInfo.DoesNotExist:
+                return JsonResponse({'code': 1, 'msg': '三方信息不存在'})
         else:
             return self.error()
 
@@ -1423,6 +1597,7 @@ class TripartiteInfoView(BaseView):
             models.TripartiteInfo.objects.create(
                 company_location=request.POST.get('company_location'),
                 company_scale=request.POST.get('company_scale'),
+                company_name=request.POST.get('company_name'),
                 salary=request.POST.get('salary'),
                 position_name=request.POST.get('position_name'),
                 position_category=request.POST.get('position_category'),
@@ -1462,6 +1637,14 @@ class TripartiteInfoView(BaseView):
             unapproved_info.status = '待审核'
             unapproved_info.save()
             return JsonResponse({'status': 'success', 'message': '三方信息修改成功，等待审核'})
+        elif module == 'delete':
+            id = request.POST.get('id')
+            try:
+                info = models.TripartiteInfo.objects.get(id=id)
+                info.delete()
+                return JsonResponse({'code': 0, 'msg': '删除成功'})
+            except models.TripartiteInfo.DoesNotExist:
+                return JsonResponse({'code': 1, 'msg': '三方信息不存在'})
         else:
             return self.error()
 
@@ -1493,7 +1676,7 @@ class GraduateEmploymentAnalysisView(BaseView):
             college = request.GET.get('college', '')
 
             # 构建查询条件
-            query = Q()
+            query = Q(status='已通过')  # 只查询已审核通过的三方信息
             if graduation_year:
                 query &= Q(graduation_year=graduation_year)
             if gender:
@@ -1532,8 +1715,8 @@ class GraduateEmploymentAnalysisView(BaseView):
                 college_total = int(sum(college_count.values))
                 position_total = int(sum(position_count.values))
 
-                # 获取所有毕业年份
-                graduation_years = TripartiteInfo.objects.values_list('graduation_year', flat=True).distinct().order_by('graduation_year')
+                # 获取所有毕业年份（仅包含已审核通过的记录）
+                graduation_years = TripartiteInfo.objects.filter(status='已通过').values_list('graduation_year', flat=True).distinct().order_by('graduation_year')
 
                 # 获取所有学院
                 colleges = Colleges.objects.all()

@@ -36,6 +36,14 @@
                 </select>
             </div>
             <div class="fater-form-inline">
+                <select name="status">
+                    <option value="">选择状态</option>
+                    <option value="待审核">待审核</option>
+                    <option value="已通过">已通过</option>
+                    <option value="未通过">未通过</option>
+                </select>
+            </div>
+            <div class="fater-form-inline">
                 <input type="text" name="keyword" placeholder="请输入关键词……"/>
             </div>
             <div class="fater-form-inline">
@@ -58,6 +66,7 @@
     </div>
     <div class="fater-model-win-body">
         <form name="auditForm" class="fater-form">
+            {% csrf_token %}
             <div class="fater-form-item">
                 <label>审核状态</label>
                 <select name="status">
